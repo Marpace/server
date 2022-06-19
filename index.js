@@ -71,8 +71,10 @@ io.on('connection', (socket) => {
     }
     const vel = getUpdatedVelocity(keyCode);
 
-    if(vel) {
-      state[roomName].players[socket.number -1].vel = vel;
+    if(state[roomName]){
+      if(vel) {
+        state[roomName].players[socket.number -1].vel = vel;
+      }
     }
   }
 });
