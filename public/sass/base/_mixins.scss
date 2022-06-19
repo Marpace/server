@@ -1,0 +1,14 @@
+@mixin flex_centered($direction) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+@mixin responsive($size) {
+    @media only screen and (min-width: $size) {
+        @content
+    }
+}
+

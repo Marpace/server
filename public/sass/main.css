@@ -1,0 +1,150 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #231D02;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.show {
+  display: block !important;
+}
+
+.show-flex {
+  display: flex !important;
+}
+
+.invisible {
+  opacity: 0 !important;
+}
+
+.visible {
+  opacity: 1 !important;
+}
+
+* {
+  font-family: "Roboto Conden", sans-serif;
+  font-size: 18px;
+}
+
+.header {
+  font-size: 4rem;
+  color: #B4DE3E;
+  letter-spacing: 5px;
+  font-family: "Bungee Shade", sans-serif;
+  text-align: center;
+}
+
+#game-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  display: none;
+}
+#game-screen #game-code {
+  font-size: 1rem;
+  color: #B4DE3E;
+  letter-spacing: 4px;
+  margin-top: 20px;
+}
+#game-screen #your-game-code {
+  font-size: 1rem;
+  color: #B4DE3E;
+}
+#game-screen .grid-container {
+  margin: 20px 0 100px;
+  height: 500px;
+  width: 500px;
+  position: relative;
+}
+#game-screen .grid-container #game-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 6.5rem;
+  font-family: "Bungee Shade", sans-serif;
+  color: #B4DE3E;
+  text-align: center;
+  width: 100%;
+}
+
+.lobby-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 50px;
+}
+.lobby-screen #game-options {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 50px;
+}
+.lobby-screen #multiplayer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 50px;
+  display: none;
+}
+.lobby-screen #multiplayer .divider {
+  width: 100%;
+  border: 1px solid #B4DE3E;
+}
+.lobby-screen #multiplayer #join-game {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.lobby-screen #multiplayer #join-game #join-input {
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: none;
+  padding: 5px;
+  text-align: center;
+  height: 40px;
+}
+.lobby-screen #multiplayer #back-btn {
+  min-width: fit-content;
+  padding: 5px 20px;
+  margin-top: 50px;
+}
+
+.lobby-btn {
+  min-width: 200px;
+  padding: 5px;
+  border: none;
+  background-color: #B4DE3E;
+  color: #151201;
+  border-radius: 10px;
+  font-family: "Bungee", sans-serif;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.lobby-btn:hover {
+  color: #B4DE3E;
+  background-color: #151201;
+  outline: 2px solid #B4DE3E;
+}

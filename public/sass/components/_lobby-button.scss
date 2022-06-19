@@ -1,0 +1,18 @@
+.lobby-btn {
+    min-width: 200px;
+    padding: 5px;
+    border: none;
+    background-color: $light_green;
+    color: $very_dark_green;
+    border-radius: 10px;
+    font-family: "Bungee", sans-serif;
+    cursor: pointer;
+    transition: .2s;
+
+    &:hover {
+        color: $light_green;
+        background-color: $very_dark_green;
+        outline: 2px solid $light_green;
+    }
+
+}
