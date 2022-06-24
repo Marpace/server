@@ -4,12 +4,19 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {cors: {origin: "*"}});
-const { initGame, gameLoop, getUpdatedVelocity } = require('./game');
-const { FRAME_RATE } = require("./constants");
+const { initMultiplayerGame, multiplayerGameLoop, getMultiplayerUpdatedVelocity } = require('./multiplayer-game');
+const {singlePlayerGameLoop, getSinglePlayerUpdatedVelocity, createSinglePlayerState } = require('./single-player-game');
+let { FRAME_RATE } = require("./vars");
 const { makeId } = require("./utils");
 
-const state = {};
+let singlePlayerState;
+const multiplayerState = {};
 const socketRooms = {};
+const rooms = {};
+let singlePlayerFoodCount = 0;
+let playerOneFoodCount = 0;
+let playerTwoFoodCount = 0;
+let multiplayerGoal;
 
 const port = process.env.PORT || 3000
 
@@ -24,39 +31,145 @@ app.get('/', (req, res) => {
   
 io.on('connection', (socket) => {   
   
-  socket.on("keydown", handleKeyDown)
-  socket.on("newGame", handleNewGame)
-  socket.on("joinGame", handleJoinGame)
+  //single player
+  socket.on("singlePlayerKeydown", handleSinglePlayerKeyDown);
+  socket.on("newSinglePlayerGame", handleNewSinglePlayerGame);
+  socket.on("playAgain", handlePlayAgain);
 
-  function handleJoinGame(gameCode){
+  //multiplayer
+  socket.on("multiplayerKeydown", handleMultiplayerKeyDown);
+  socket.on("newMultiplayerGame", handleNewMultiplayerGame);
+  socket.on("joinGame", handleJoinGame);
+  socket.on('startMultiplayerGame', handleStartMultiplayerGame);
 
+  
+  // Single player functions ////////////////////////////
+
+  function handleNewSinglePlayerGame(gameSettings) {
+    
+    FRAME_RATE = gameSettings.speed + 6;
+    singlePlayerState = createSinglePlayerState();
+    setTimeout(() => {
+      startSinglePlayerGameInterval(singlePlayerState);
+    }, 4000);
+    
+    socket.emit("countdown");
+  }
+
+  function handleSinglePlayerKeyDown(keyCode) {
+    try {
+      keyCode = parseInt(keyCode);
+    } catch(e) {
+      console.error(e);
+      return;
+    }
+    const vel = getSinglePlayerUpdatedVelocity(keyCode, singlePlayerState);
+    if(vel) {
+      singlePlayerState.player.vel = vel;
+    }
+  }
+
+  function startSinglePlayerGameInterval(state) {
+    const intervalId = setInterval(() => {
+    const result = singlePlayerGameLoop(state);
+
+    if(!result.winner) {
+      socket.emit("singlePlayerGameState", JSON.stringify(state));
+      if(result.foodEaten) {
+        singlePlayerFoodCount++;
+        socket.emit('updateSingleFoodCount', singlePlayerFoodCount);
+      }
+    } else {
+      socket.emit("singlePlayerGameOver", singlePlayerFoodCount);
+      singlePlayerState = createSinglePlayerState();
+      clearInterval(intervalId);
+      singlePlayerFoodCount = 0;
+    }
+    }, 1000 / FRAME_RATE);
+  }
+
+  // multiplayer functions ///////////////////////////////////////////
+
+  function handleNewMultiplayerGame(name) {
+    let roomName = makeId(5);
+    socketRooms[socket.id] = roomName;
+    socket.emit("gameCode", roomName)
+ 
+    multiplayerState[roomName] = initMultiplayerGame();
+    rooms[roomName] = {playerCount: 1, playerOneName: name}; 
+ 
+    socket.join(roomName);
+    socket.number = 1;
+    socket.emit("init", 1);
+    io.sockets.in(roomName).emit('displayPlayerOne' , name)
+  }
+
+  function handleJoinGame(data){
+
+    const parsedData = JSON.parse(data);
+    const gameCode = parsedData.code;
+    const playerTwoName = parsedData.playerTwoName
     socketRooms[socket.id] = gameCode;
-
+    
+    if(!rooms[gameCode]) {
+      socket.emit('unknownCode')
+      return;
+    } else if(rooms[gameCode].playerCount > 1)  {
+      socket.emit('tooManyPlayers')
+      return;
+    }
+    
+    rooms[gameCode].playerCount = 2;
+    rooms[gameCode][playerTwoName] = playerTwoName;
     socket.join(gameCode);
     socket.number = 2;
     socket.emit("init", 2);
 
     io.sockets.in(gameCode)
-    .emit("countdown")
+    .emit('displayPlayerNames', 
+      JSON.stringify({playerOne: rooms[gameCode].playerOneName, 
+      playerTwo: playerTwoName})
+    )
+  }
 
+  function handleStartMultiplayerGame(data) {
+    const speed = data.speed;
+    const code = data.code;
+    multiplayerGoal = data.goal;
+
+    console.log(data)
+
+    FRAME_RATE = speed + 6;
+    if(rooms[code].playerCount < 2){
+      socket.emit('notEnoughPlayers')
+      return;
+    }
+    io.sockets.in(code)
+    .emit("countdown")
     setTimeout(() => {
-      startGameInterval(gameCode)
+      startMultiplayerGameInterval(code)
     }, 4000);
   }
 
-  function handleNewGame() {
-    let roomName = makeId(5);
-    socketRooms[socket.id] = roomName;
-    socket.emit("gameCode", roomName)
- 
-    state[roomName] = initGame();
- 
-    socket.join(roomName);
-    socket.number = 1;
-    socket.emit("init", 1);
-  }
+  function handlePlayAgain(data) {
 
-  function handleKeyDown(keyCode) {
+    const gameCode = data.code;
+    const speed = data.speed;
+    multiplayerGoal = data.goal
+    
+    FRAME_RATE = speed + 6;
+
+    io.sockets.in(gameCode)
+    .emit("countdown")
+    io.sockets.in(gameCode)
+    .emit("reset")
+
+    setTimeout(() => {
+      startMultiplayerGameInterval(gameCode)
+    }, 4000);
+  }
+  
+  function handleMultiplayerKeyDown(keyCode) {
     const roomName = socketRooms[socket.id];
 
     if(!roomName) {
@@ -69,44 +182,67 @@ io.on('connection', (socket) => {
       console.error(e);
       return;
     }
-    const vel = getUpdatedVelocity(keyCode);
+    const vel = getMultiplayerUpdatedVelocity(keyCode, multiplayerState[roomName], socket.number - 1);
 
-    if(state[roomName]){
-      if(vel) {
-        state[roomName].players[socket.number -1].vel = vel;
-      }
+    if(vel) {
+      multiplayerState[roomName].players[socket.number -1].vel = vel;
     }
+    
   }
+
 });
 
 
-function startGameInterval(roomName) {
+function startMultiplayerGameInterval(roomName) {
     const intervalId = setInterval(() => {
-    const winner = gameLoop(state[roomName]);
+    const result = multiplayerGameLoop(multiplayerState[roomName]);
 
-    if(!winner) {
-      emitGameState(roomName, state[roomName]);
-    } else {
-      emitGameOver(roomName, winner)
-      state[roomName] = null
-      clearInterval(intervalId);
+      console.log(result)
+      console.log(playerOneFoodCount)
+      console.log(playerTwoFoodCount)
+      console.log(multiplayerGoal)
+    if(!result.winner) {
+      emitMultiplayerGameState(roomName, result.foodEaten)
+      if(playerOneFoodCount === multiplayerGoal){
+        const winner = 1
+        emitMultiplayerGameOver(roomName, winner, intervalId)
+      }
+      if(playerTwoFoodCount === multiplayerGoal){
+        const winner = 2
+        emitMultiplayerGameOver(roomName, winner, intervalId)
+      }
     }
+    else {
+      emitMultiplayerGameOver(roomName, result.winner, intervalId)
+    }
+    
   }, 1000 / FRAME_RATE);
 }
 
-function emitGameState(roomName, state){
-  io.sockets.in(roomName)
-  .emit("gameState", JSON.stringify(state));
+function emitMultiplayerGameState(gameCode, foodEaten) {
+  io.sockets.in(gameCode)
+  .emit("multiplayerGameState", JSON.stringify(multiplayerState[gameCode]));
+  if(foodEaten === 1) playerOneFoodCount++
+  if(foodEaten === 2) playerTwoFoodCount++
+  io.sockets.in(gameCode)
+  .emit('updateMultiFoodCount', {playerOne: playerOneFoodCount, playerTwo: playerTwoFoodCount})
 }
 
-function emitGameOver(roomName, winner){
-  io.sockets.in(roomName)
-  .emit("gameOver", JSON.stringify({ winner }));
+function emitMultiplayerGameOver(gameCode, winner, intervalId){
+  io.sockets.in(gameCode)
+  .emit("multiplayerGameOver", winner);
+  multiplayerState[gameCode] = initMultiplayerGame();
+  playerOneFoodCount = 0;
+  playerTwoFoodCount = 0;
+  clearInterval(intervalId);
+  io.sockets.in(gameCode)
+  .emit('updateMultiStats', winner)
 }
-
-
 
 
 server.listen(port, () => {
   console.log('listening on port: 3000');
 });
+
+
+

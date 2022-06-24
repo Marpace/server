@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Roboto+Condensed:wght@300;400&display=swap');
 @import "base/variables";
 @import "base/mixins";
 @import "base/reset";
@@ -6,4 +7,6 @@
 @import "components/header"; 
 @import "components/game"; 
 @import "components/lobby"; 
-@import "components/lobby-button"
+@import "components/lobby-button";
+@import "components/lobby-input";
+@import "components/game-aside";

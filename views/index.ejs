@@ -5,11 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Roboto+Condensed:wght@500&display=swap" rel="stylesheet">
-
     <!-- Styles -->
     <link type="" rel="stylesheet" href="../sass/main.css">
 
@@ -18,28 +13,39 @@
 <body>
     <main>
         <h1 class="header">Snake Race</h1>
-        <div class="lobby-screen">
+        <div id="lobby-screen">
             <div id="game-options">
                 <button id="single-player-btn" class="lobby-btn">Single player</button>
                 <button id="multiplayer-btn" class="lobby-btn">Multiplayer</button>
+                <div id="enter-nickname">
+                    <input id="nickname-input" class="lobby-input" type="text" placeholder="Enter nickname">
+                    <button id="continue-btn" class="lobby-btn">Continue</button>
+                    <p id="nickname-message">Please enter a nickname</p>
+                </div>
             </div>
             <div id="multiplayer">
+                <h1 id="welcome-message"></h1>
                 <button id="create-game-btn" class="lobby-btn">Create new game</button>
                 <hr class="divider">
                 <dive id="join-game">
-                    <input id="join-input" type="text" placeholder="Enter game code" required>
+                    <input id="join-input" class="lobby-input" type="text" placeholder="Enter game code" required>
                     <button id="join-game-btn" class="lobby-btn">Join Game</button>
+                    <p id="code-input-message" class="text-info">Please enter a game code</p>
                 </dive>
                 <button id="back-btn" class="lobby-btn back-btn">Back</button>
             </div>
         </div>
         <div id="game-screen">
-            <h1 id="your-game-code">Share this game code to invite another player</h1>
-            <span id="game-code"></span>
             <div class="grid-container">
+                <h1 id="countdown"></h1>
                 <h1 id="game-message"></h1>
                 <canvas id="canvas"></canvas>
+                <div id="game-code-div">
+                    <p id="your-game-code" class="text-info"></p>
+                    <p class="text-info">controls: ← ↑ → ↓</p>
+                </div>
             </div>
+            <%- include('partials/game-aside') -%>
         </div>
 
     </main>

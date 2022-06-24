@@ -1,0 +1,75 @@
+.game-aside {
+    @include flex_centered(column); 
+    justify-content: space-between;
+    height: 600px;
+
+    .game-info {
+        width: 200px;
+        height: 525px;
+        padding: 25px;
+        background-color: $very_dark_green;
+        @include flex_centered(column);
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 30px;
+    
+        p, span {
+            font-weight: 400;
+        }
+        &__section {
+            width: 100%;
+            @include flex_centered(column);
+            gap: 20px;
+    
+            &-title {
+                color: $light_green;
+                font-size: 1.1rem;
+            }
+            .section__item {
+                background-color: $light_green;
+                width: 100%;
+                padding: 5px 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+    
+                input,
+                input[type=number]::-webkit-inner-spin-button, 
+                input[type=number]::-webkit-outer-spin-button {  
+                    opacity: 1;
+                    width: 50px;
+                    text-align: center;
+                    font-weight: 400;
+                }
+            }
+            .player-2-settings {
+
+                input {
+                    background: none;
+                    border: none;
+                    text-align: right;
+
+                    &::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+                    &[type=number] {
+                        -moz-appearance: textfield;
+                    }
+                }
+            }
+        }
+        #current-players {
+            .section__item:last-child {
+                background-color: gray;
+            } 
+        }
+    }
+    #game-aside__buttons {
+        
+        #play-again-btn {
+            display: none;
+        }
+    }
+}

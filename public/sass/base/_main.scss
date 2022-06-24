@@ -1,0 +1,31 @@
+
+main {
+    position: relative;
+    @include flex_centered(column);
+    justify-content: flex-start;
+    padding-bottom: 100px;
+    width: 100%;
+    min-height: 100vh;
+
+}
+
+.hidden {
+    display: none !important;
+}
+
+.show {
+    display: block !important;
+}
+
+.show-flex {
+    display: flex !important;
+}
+
+.invisible {
+    opacity: 0 !important;
+}
+
+.visible {
+    opacity: 1 !important;
+}
+

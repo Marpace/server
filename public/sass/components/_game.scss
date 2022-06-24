@@ -1,24 +1,16 @@
 #game-screen {
-    @include flex_centered(column);
+    @include flex_centered(row);
+    align-items: flex-start;
+    gap: 30px;
     display: none;
 
-    #game-code {
-        font-size: 1rem;
-        color: $light_green;
-        letter-spacing: 4px;
-        margin-top: 20px;
-    }
-    #your-game-code {
-        font-size: 1rem;
-        color: $light_green;
-    }
     .grid-container {
-        margin: 20px 0 100px;
-        height: 500px;
-        width: 500px;
+        height: 650px;
+        width: 600px;
         position: relative;
+        margin-bottom: 50px;
 
-        #game-message {
+        #game-message, #countdown {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -29,5 +21,13 @@
             text-align: center;
             width: 100%;
         }
+        #game-message {
+            font-size: 4rem;
+        }
+    }
+    #game-code-div {
+        width: 600px;
+        display: flex;
+        justify-content: space-between;
     }
 }

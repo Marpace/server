@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Roboto+Condensed:wght@300;400&display=swap");
 * {
   margin: 0;
   padding: 0;
@@ -34,8 +35,13 @@ body {
 }
 
 * {
-  font-family: "Roboto Conden", sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
   font-size: 18px;
+  font-weight: 300;
+}
+
+.text-info {
+  color: #B4DE3E;
 }
 
 .header {
@@ -48,29 +54,21 @@ body {
 
 #game-screen {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 30px;
   display: none;
 }
-#game-screen #game-code {
-  font-size: 1rem;
-  color: #B4DE3E;
-  letter-spacing: 4px;
-  margin-top: 20px;
-}
-#game-screen #your-game-code {
-  font-size: 1rem;
-  color: #B4DE3E;
-}
 #game-screen .grid-container {
-  margin: 20px 0 100px;
-  height: 500px;
-  width: 500px;
+  height: 650px;
+  width: 600px;
   position: relative;
+  margin-bottom: 50px;
 }
-#game-screen .grid-container #game-message {
+#game-screen .grid-container #game-message, #game-screen .grid-container #countdown {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -81,8 +79,25 @@ body {
   text-align: center;
   width: 100%;
 }
+#game-screen .grid-container #game-message {
+  font-size: 4rem;
+}
+#game-screen #game-code-div {
+  width: 600px;
+  display: flex;
+  justify-content: space-between;
+}
 
-.lobby-screen {
+#lobby-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 50px;
+  margin-top: 50px;
+}
+#lobby-screen #game-options {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -90,43 +105,53 @@ body {
   flex-wrap: wrap;
   gap: 50px;
 }
-.lobby-screen #game-options {
+#lobby-screen #game-options #enter-nickname {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 50px;
+  flex-wrap: nowrap;
+  gap: 10px;
+  opacity: 0;
+  transition: 0.3s;
 }
-.lobby-screen #multiplayer {
+#lobby-screen #game-options #enter-nickname #nickname-message {
+  color: #B4DE3E;
+  opacity: 0;
+  margin-top: 20px;
+}
+#lobby-screen #multiplayer {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 50px;
+  gap: 30px;
   display: none;
 }
-.lobby-screen #multiplayer .divider {
+#lobby-screen #multiplayer #welcome-message {
+  font-size: 1.5rem;
+  color: #B4DE3E;
+  font-family: "Bungee", sans-serif;
+}
+#lobby-screen #multiplayer .divider {
   width: 100%;
   border: 1px solid #B4DE3E;
 }
-.lobby-screen #multiplayer #join-game {
+#lobby-screen #multiplayer #join-game {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
 }
-.lobby-screen #multiplayer #join-game #join-input {
-  margin-bottom: 20px;
-  border-radius: 10px;
-  border: none;
-  padding: 5px;
-  text-align: center;
-  height: 40px;
+#lobby-screen #multiplayer #join-game #code-input-message {
+  opacity: 0;
+  margin-top: 20px;
+  transition: 0.2s;
 }
-.lobby-screen #multiplayer #back-btn {
+#lobby-screen #multiplayer #back-btn {
   min-width: fit-content;
   padding: 5px 20px;
   margin-top: 50px;
@@ -147,4 +172,98 @@ body {
   color: #B4DE3E;
   background-color: #151201;
   outline: 2px solid #B4DE3E;
+}
+
+.button-disabled {
+  background-color: rgb(167, 167, 167);
+  cursor: not-allowed;
+  color: rgb(119, 119, 119);
+}
+.button-disabled:hover {
+  background-color: rgb(167, 167, 167);
+  color: rgb(119, 119, 119);
+  outline: none;
+}
+
+.lobby-input {
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: none;
+  padding: 5px;
+  text-align: center;
+  height: 40px;
+}
+
+.game-aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  height: 600px;
+}
+.game-aside .game-info {
+  width: 200px;
+  height: 525px;
+  padding: 25px;
+  background-color: #151201;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 30px;
+}
+.game-aside .game-info p, .game-aside .game-info span {
+  font-weight: 400;
+}
+.game-aside .game-info__section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.game-aside .game-info__section-title {
+  color: #B4DE3E;
+  font-size: 1.1rem;
+}
+.game-aside .game-info__section .section__item {
+  background-color: #B4DE3E;
+  width: 100%;
+  padding: 5px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.game-aside .game-info__section .section__item input,
+.game-aside .game-info__section .section__item input[type=number]::-webkit-inner-spin-button,
+.game-aside .game-info__section .section__item input[type=number]::-webkit-outer-spin-button {
+  opacity: 1;
+  width: 50px;
+  text-align: center;
+  font-weight: 400;
+}
+.game-aside .game-info__section .player-2-settings input {
+  background: none;
+  border: none;
+  text-align: right;
+}
+.game-aside .game-info__section .player-2-settings input::-webkit-outer-spin-button, .game-aside .game-info__section .player-2-settings input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.game-aside .game-info__section .player-2-settings input[type=number] {
+  -moz-appearance: textfield;
+}
+.game-aside .game-info #current-players .section__item:last-child {
+  background-color: gray;
+}
+.game-aside #game-aside__buttons #play-again-btn {
+  display: none;
 }

@@ -16,3 +16,15 @@
     }
 
 }
+
+.button-disabled {
+    background-color: rgb(167, 167, 167);
+    cursor:not-allowed;
+    color: rgb(119, 119, 119);;
+
+    &:hover {
+        background-color: rgb(167, 167, 167);
+        color: rgb(119, 119, 119);
+        outline: none;
+    }
+}

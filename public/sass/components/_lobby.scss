@@ -1,31 +1,48 @@
-.lobby-screen {
+#lobby-screen {
     @include flex_centered(column);
     gap: 50px;
+    margin-top: 50px;
     
 
     #game-options { 
         @include flex_centered(column);
         gap: 50px;
+
+        #enter-nickname {
+            @include flex_centered(column);
+            flex-wrap: nowrap;
+            gap: 10px;
+            opacity: 0;
+            transition: .3s;
+
+            #nickname-message {
+                color: $light_green;
+                opacity: 0;
+                margin-top: 20px;
+            }
+        }
     }
     #multiplayer {
         @include flex_centered(column);
-        gap: 50px;
+        gap: 30px;
         display: none;
         
+        #welcome-message {
+            font-size: 1.5rem;
+            color: $light_green;
+            font-family: "Bungee", sans-serif;
+        }
         .divider {
             width: 100%;
             border: 1px solid $light_green;
         }
         #join-game {
             @include flex_centered(column);
-            
-            #join-input {
-                margin-bottom: 20px;
-                border-radius: 10px;
-                border: none;
-                padding: 5px;
-                text-align: center;
-                height: 40px;
+
+            #code-input-message {
+                opacity: 0;
+                margin-top: 20px;
+                transition: .2s;
             }
         }
         #back-btn {
