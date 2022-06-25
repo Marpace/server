@@ -267,3 +267,76 @@ body {
 .game-aside #game-aside__buttons #play-again-btn {
   display: none;
 }
+
+#game-chat {
+  width: 250px;
+}
+#game-chat #chat {
+  width: 100%;
+  height: 480px;
+  background-color: #151201;
+}
+#game-chat #chat #sent-messages {
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 10px;
+}
+#game-chat #chat #sent-messages::-webkit-scrollbar {
+  width: 7px;
+}
+#game-chat #chat #sent-messages::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(158, 158, 158, 0.3);
+  border-radius: 10px;
+}
+#game-chat #chat #sent-messages::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(177, 177, 177, 0.5);
+  box-shadow: inset 0 0 6px rgba(177, 177, 177, 0.5);
+}
+#game-chat #chat #sent-messages .chat-message {
+  width: fit-content;
+  max-width: 80%;
+  padding: 10px;
+  background-color: #e7e7e7;
+  border-radius: 10px;
+}
+#game-chat #chat #sent-messages .chat-message p {
+  font-weight: 400;
+}
+#game-chat #chat #sent-messages .incoming-message {
+  align-self: flex-start;
+}
+#game-chat #chat #sent-messages .outgoing-message {
+  align-self: flex-end;
+}
+#game-chat #send-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+}
+#game-chat #send-message #compose-message {
+  height: 40px;
+  width: 100%;
+  border: none;
+  background-color: #e7e7e7;
+  padding: 0 10px;
+  font-weight: 400;
+}
+#game-chat #send-message #send-message-btn {
+  width: 100%;
+  padding: 2px;
+}

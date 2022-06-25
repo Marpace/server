@@ -6,9 +6,10 @@ const SNAKE_1_COLOUR = '#88F1D2';
 const SNAKE_2_COLOUR = '#FFEF5C';
 const FOOD_COLOUR = '#e66916';
 
-// const socket = io('https://snake-race.herokuapp.com');
-const socket = io('http://localhost:3000');
+const socket = io('https://snake-race.herokuapp.com');
+// const socket = io('http://localhost:3000');
 
+socket.on('countdown', handleCountdown);
 socket.on('init', handleInit);
 
 //single player
@@ -28,9 +29,10 @@ socket.on('displayPlayerNames', handleDisplayPlayerNames)
 socket.on('notEnoughPlayers', handleNotEnoughtPlayers)
 socket.on('updateMultiFoodCount', handleUpdateMultiFoodCount)
 socket.on('updateMultiStats', handleUpdateMultiStats);
+socket.on('updatePlayerTwoSettings', handleUpdatePlayerTwoSettings);
 
-socket.on('countdown', handleCountdown);
-
+//chat 
+socket.on('postMessage', handlePostMessage);
 
 
 //buttons
@@ -79,10 +81,17 @@ const playerTwoFoodCount = qs("#player-two-food-count");
 const wins = qs("#wins");
 const losses = qs("#losses");
 
+//game chat 
+const messageInput = qs("#compose-message");
+const sendMessageBtn = qs("#send-message-btn");
+const sentMessagesContainer = qs("#sent-messages");
+
+
+
 
 let countdownTimer = 1000;  
 
-let singlePlayer = false;
+let gameMode = "";
 let canvas, ctx;
 let playerNumber, gameCode;
 let gameActive = false;
@@ -119,7 +128,7 @@ createGameBtn.addEventListener('click', newMultiplayerGame);
 joinGameBtn.addEventListener('click', joinGame);
 startGameBtn.addEventListener('click', startGame)
 
-playAgainBtn.addEventListener('click', playAgain);
+playAgainBtn.addEventListener('click', startGame);
 
 
 function startGame() {
@@ -128,38 +137,24 @@ function startGame() {
     playAgainBtn.classList.add("button-disabled");
     playAgainBtn.style.display = "block";
     gameActive = true;
-    if(singlePlayer) {
-        const gameSettings = {
-            goal: goalInput.value,
-            speed: parseInt(speedInput.value)
-        };
-        socket.emit('newSinglePlayerGame', gameSettings);
-    } else {
-        const code = playerNumber === 1 ? gameCode : joinInput.value
-        const speed = parseInt(speedInput.value)
-        const goal = parseInt(goalInput.value)
-        socket.emit('startMultiplayerGame', {code: code, speed: speed, goal: goal});
-    }
-}
-
-function playAgain() {
-    if(gameActive) return;
-    if(singlePlayer) {
-        const gameSettings = {
-            goal: goalInput.value,
-            speed: parseInt(speedInput.value)
-        };
+    if(gameMode === "singlePlayer") {
         gameMessage.innerHTML = "";
         foodCount.innerHTML = 0;
-        init();
-        socket.emit('newSinglePlayerGame', gameSettings);
-    } else {
-        const speed = parseInt(speedInput.value)
-        const goal = parseInt(goalInput.value)
-        socket.emit('playAgain', {code: gameCode, speed: speed, goal: goal})
+        const gameSettings = {
+            mode: gameMode,
+            speed: parseInt(speedInput.value)
+        };
+        socket.emit('startGame', gameSettings);
+    } 
+    if(gameMode === "multiplayer") {
+        const gameSettings = {
+            mode: gameMode,
+            code: playerNumber === 1 ? gameCode : joinInput.value,
+            speed: parseInt(speedInput.value),
+            goal: parseInt(goalInput.value)
+        }
+        socket.emit('startGame', gameSettings);
     }
-    gameActive = true;
-    playAgainBtn.classList.add("button-disabled");
 }
 
 function init() {
@@ -187,13 +182,18 @@ function paintPlayer(playerState, size, colour) {
 function keydown(e) {
     switch(e.keyCode){
         case 37: case 39: case 38:  case 40: 
-        case 32: e.preventDefault(); break; 
+         e.preventDefault(); 
+         const data = {
+             keyCode: e.keyCode,
+             gameMode: gameMode
+         }
+         socket.emit('keydown', data)
+         break; 
+         case 13: 
+         if(messageInput === document.activeElement) {
+            sendMessage();
+         }
         default: break; 
-    }
-    if(singlePlayer) {
-        socket.emit('singlePlayerKeydown', e.keyCode)
-    } else {
-        socket.emit('multiplayerKeydown', e.keyCode);
     }
 }
 
@@ -218,7 +218,7 @@ function newSinglePlayerGame() {
     currentPlayers.style.display = "none";
     gameStatsMultiplayer.style.display = "none";
     goalSetting.style.display = "none";
-    singlePlayer = true;
+    gameMode = "singlePlayer";
     init();
 }
 
@@ -271,7 +271,7 @@ function newMultiplayerGame() {
     gameStatsSinglePlayer.style.display = "none";
     socket.emit('newMultiplayerGame', nicknameInput.value);
     init();
-    singlePlayer = false;
+    gameMode = "multiplayer";
 }
 
 function joinGame() {
@@ -285,6 +285,7 @@ function joinGame() {
     const code = joinInput.value;
     socket.emit('joinGame', JSON.stringify({code: code, playerTwoName: nicknameInput.value}));
     init();
+    gameMode = "multiplayer";
 }
 
 function handleDisplayPlayerOne(name) {
@@ -295,6 +296,15 @@ function handleDisplayPlayerNames(data) {
     player1.innerHTML = data.playerOne;
     player2.innerHTML = data.playerTwo;
     player2.parentElement.style.backgroundColor = "#B4DE3E";
+}
+
+function handleUpdatePlayerTwoSettings(settings) {
+    if(playerNumber === 2) {
+        goalInput.value = settings.goal;
+        speedInput.value = settings.speed;
+    }
+    console.log(playerNumber)
+    console.log(settings)
 }
 
 function handleNotEnoughtPlayers(){
@@ -326,6 +336,7 @@ function handleInit(number) {
     if(playerNumber === 2) {
         goalSetting.classList.add("player-2-settings")
         speedSetting.classList.add("player-2-settings")
+
     }
     gameScreen.style.display = "flex";
     multiplayerScreen.style.display = "none";
@@ -370,7 +381,6 @@ function handleMultiplayerGameOver(winner) {
     gameActive = false;
     playAgainBtn.classList.remove("button-disabled");
     countdownTimer = 1000;
-    console.log(winner)
 
     if (winner === playerNumber) {
         gameMessage.innerHTML = "You win!"
@@ -407,5 +417,37 @@ function handleReset() {
     gameMessage.innerHTML = "";
     init();
     countdownTimer = 1000;
-    console.log(countdownTimer)
+}
+
+
+sendMessageBtn.addEventListener('click', sendMessage)
+
+function sendMessage() {
+    const data = {
+        message: messageInput.value,
+        author: playerNumber
+    }
+    if(data.message === "") {return;}
+    socket.emit('sendMessage', data)
+    messageInput.value = "";
+}
+
+
+function handlePostMessage(data) {
+    const newMessage = document.createElement("div");
+    const messageText = document.createElement("p");
+
+    newMessage.classList.add("chat-message");
+    messageText.innerHTML = data.message
+
+    newMessage.appendChild(messageText);
+    sentMessagesContainer.appendChild(newMessage);
+
+    sentMessagesContainer.scrollTop = sentMessagesContainer.scrollHeight;
+
+    if(data.author === playerNumber){
+        newMessage.classList.add("outgoing-message");
+    } else {
+        newMessage.classList.add("incoming-message");
+    }
 }

@@ -30,42 +30,73 @@ app.get('/', (req, res) => {
 });
   
 io.on('connection', (socket) => {   
-  
-  //single player
-  socket.on("singlePlayerKeydown", handleSinglePlayerKeyDown);
-  socket.on("newSinglePlayerGame", handleNewSinglePlayerGame);
-  socket.on("playAgain", handlePlayAgain);
 
-  //multiplayer
-  socket.on("multiplayerKeydown", handleMultiplayerKeyDown);
+  socket.on('startGame', handleStartGame)
+  socket.on("keydown", handleKeydown);
   socket.on("newMultiplayerGame", handleNewMultiplayerGame);
   socket.on("joinGame", handleJoinGame);
-  socket.on('startMultiplayerGame', handleStartMultiplayerGame);
-
+  socket.on('sendMessage', handleSendMessage)
   
-  // Single player functions ////////////////////////////
 
-  function handleNewSinglePlayerGame(gameSettings) {
-    
-    FRAME_RATE = gameSettings.speed + 6;
-    singlePlayerState = createSinglePlayerState();
-    setTimeout(() => {
-      startSinglePlayerGameInterval(singlePlayerState);
-    }, 4000);
-    
-    socket.emit("countdown");
+  function handleStartGame(game){
+    FRAME_RATE = game.speed + 6
+
+    if(game.mode === "singlePlayer") {
+      singlePlayerState = createSinglePlayerState();
+      socket.emit("countdown");
+      setTimeout(() => {
+        startSinglePlayerGameInterval(singlePlayerState);
+      }, 4000);
+    }
+    if(game.mode === "multiplayer") {
+      const code = game.code;
+      multiplayerGoal = game.goal;
+
+      const settings = {
+        goal: game.goal,
+        speed: game.speed
+      }
+
+      console.log(multiplayerGoal)
+      if(rooms[code].playerCount < 2){
+        socket.emit('notEnoughPlayers')
+        return;
+      }
+      io.sockets.in(code)
+      .emit("countdown")
+      io.sockets.in(code)
+      .emit("reset")
+      io.sockets.in(code)
+      .emit("updatePlayerTwoSettings", settings)
+      setTimeout(() => {
+        startMultiplayerGameInterval(code)
+      }, 4000);
+    }
   }
 
-  function handleSinglePlayerKeyDown(keyCode) {
+  function handleKeydown(data) {
+    let keyCode = data.keyCode;
+    const mode = data.gameMode;
+    console.log(mode)
+    console.log(keyCode)
     try {
       keyCode = parseInt(keyCode);
     } catch(e) {
       console.error(e);
       return;
     }
-    const vel = getSinglePlayerUpdatedVelocity(keyCode, singlePlayerState);
-    if(vel) {
-      singlePlayerState.player.vel = vel;
+    if(mode === "singlePlayer") {
+      const vel = getSinglePlayerUpdatedVelocity(keyCode, singlePlayerState);
+      if(vel) {
+        singlePlayerState.player.vel = vel;
+      }
+    }
+    if(mode === "multiplayer") {
+      const code = socketRooms[socket.id]
+      const vel = getMultiplayerUpdatedVelocity(keyCode, multiplayerState[code], socket.number - 1);
+      if(vel) {
+        multiplayerState[code].players[socket.number -1].vel = vel;
+      }
     }
   }
 
@@ -96,7 +127,7 @@ io.on('connection', (socket) => {
     socket.emit("gameCode", roomName)
  
     multiplayerState[roomName] = initMultiplayerGame();
-    rooms[roomName] = {playerCount: 1, playerOneName: name}; 
+    rooms[roomName] = {playerCount: 1, playerOneName: name, playerTwoName: null}; 
  
     socket.join(roomName);
     socket.number = 1;
@@ -108,7 +139,7 @@ io.on('connection', (socket) => {
 
     const parsedData = JSON.parse(data);
     const gameCode = parsedData.code;
-    const playerTwoName = parsedData.playerTwoName
+    const playerTwo = parsedData.playerTwoName
     socketRooms[socket.id] = gameCode;
     
     if(!rooms[gameCode]) {
@@ -120,7 +151,7 @@ io.on('connection', (socket) => {
     }
     
     rooms[gameCode].playerCount = 2;
-    rooms[gameCode][playerTwoName] = playerTwoName;
+    rooms[gameCode].playerTwoName = playerTwo;
     socket.join(gameCode);
     socket.number = 2;
     socket.emit("init", 2);
@@ -128,79 +159,29 @@ io.on('connection', (socket) => {
     io.sockets.in(gameCode)
     .emit('displayPlayerNames', 
       JSON.stringify({playerOne: rooms[gameCode].playerOneName, 
-      playerTwo: playerTwoName})
+      playerTwo: playerTwo})
     )
   }
 
-  function handleStartMultiplayerGame(data) {
-    const speed = data.speed;
-    const code = data.code;
-    multiplayerGoal = data.goal;
-
-    console.log(data)
-
-    FRAME_RATE = speed + 6;
-    if(rooms[code].playerCount < 2){
-      socket.emit('notEnoughPlayers')
-      return;
-    }
-    io.sockets.in(code)
-    .emit("countdown")
-    setTimeout(() => {
-      startMultiplayerGameInterval(code)
-    }, 4000);
-  }
-
-  function handlePlayAgain(data) {
-
-    const gameCode = data.code;
-    const speed = data.speed;
-    multiplayerGoal = data.goal
-    
-    FRAME_RATE = speed + 6;
-
-    io.sockets.in(gameCode)
-    .emit("countdown")
-    io.sockets.in(gameCode)
-    .emit("reset")
-
-    setTimeout(() => {
-      startMultiplayerGameInterval(gameCode)
-    }, 4000);
-  }
-  
-  function handleMultiplayerKeyDown(keyCode) {
+  function handleSendMessage(data) {
     const roomName = socketRooms[socket.id];
-
-    if(!roomName) {
-      return
-    }
-
-    try {
-      keyCode = parseInt(keyCode);
-    } catch(e) {
-      console.error(e);
-      return;
-    }
-    const vel = getMultiplayerUpdatedVelocity(keyCode, multiplayerState[roomName], socket.number - 1);
-
-    if(vel) {
-      multiplayerState[roomName].players[socket.number -1].vel = vel;
-    }
-    
+    io.sockets.in(roomName)
+    .emit('postMessage', data)
   }
+
+  socket.on('disconnect', () => {
+    const room = rooms[socketRooms[socket.id]]
+    if(room) {
+      room.playerCount--
+    }
+    console.log(rooms)
+  })
 
 });
-
 
 function startMultiplayerGameInterval(roomName) {
     const intervalId = setInterval(() => {
     const result = multiplayerGameLoop(multiplayerState[roomName]);
-
-      console.log(result)
-      console.log(playerOneFoodCount)
-      console.log(playerTwoFoodCount)
-      console.log(multiplayerGoal)
     if(!result.winner) {
       emitMultiplayerGameState(roomName, result.foodEaten)
       if(playerOneFoodCount === multiplayerGoal){
@@ -238,6 +219,10 @@ function emitMultiplayerGameOver(gameCode, winner, intervalId){
   io.sockets.in(gameCode)
   .emit('updateMultiStats', winner)
 }
+
+
+
+
 
 
 server.listen(port, () => {
