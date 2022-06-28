@@ -12,6 +12,14 @@ body {
     background-color: $dark_green
 }
 
+main {
+    min-height: 100vh;
+    @include flex_centered(column);
+    @include responsive($mobile) {
+        justify-content: flex-start;
+    }
+}
+
 .hidden {
     display: none !important;
 }

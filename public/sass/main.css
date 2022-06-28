@@ -14,6 +14,20 @@ body {
   background-color: #231D02;
 }
 
+main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+@media only screen and (max-width: 415px) {
+  main {
+    justify-content: flex-start;
+  }
+}
+
 .hidden {
   display: none !important;
 }
@@ -51,6 +65,13 @@ body {
   font-family: "Bungee Shade", sans-serif;
   text-align: center;
 }
+@media only screen and (max-width: 415px) {
+  .header {
+    font-size: 3.5rem;
+    line-height: 1.5;
+    margin-top: 20px;
+  }
+}
 
 #game-screen {
   display: flex;
@@ -62,11 +83,25 @@ body {
   gap: 30px;
   display: none;
 }
+@media only screen and (max-width: 415px) {
+  #game-screen {
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+}
 #game-screen .grid-container {
   height: 650px;
   width: 600px;
   position: relative;
   margin-bottom: 50px;
+}
+@media only screen and (max-width: 415px) {
+  #game-screen .grid-container {
+    height: 340px;
+    width: 340px;
+    margin-bottom: 0;
+  }
 }
 #game-screen .grid-container #game-message, #game-screen .grid-container #countdown {
   position: absolute;
@@ -87,6 +122,15 @@ body {
   display: flex;
   justify-content: space-between;
 }
+#game-screen #mobile-start-game-btn {
+  display: none;
+}
+@media only screen and (max-width: 415px) {
+  #game-screen #mobile-start-game-btn {
+    display: block;
+    width: 100%;
+  }
+}
 
 #lobby-screen {
   display: flex;
@@ -96,6 +140,11 @@ body {
   flex-wrap: wrap;
   gap: 50px;
   margin-top: 50px;
+}
+@media only screen and (max-width: 415px) {
+  #lobby-screen {
+    margin-top: 20px;
+  }
 }
 #lobby-screen #game-options {
   display: flex;
@@ -203,8 +252,17 @@ body {
   justify-content: space-between;
   height: 600px;
 }
+@media only screen and (max-width: 415px) {
+  .game-aside {
+    position: absolute;
+    left: -110%;
+    z-index: 1000;
+    transition: 0.5s ease-in-out;
+    width: 100%;
+  }
+}
 .game-aside .game-info {
-  width: 200px;
+  width: 230px;
   height: 525px;
   padding: 25px;
   background-color: #151201;
@@ -215,7 +273,14 @@ body {
   flex-wrap: wrap;
   flex-wrap: nowrap;
   justify-content: flex-start;
-  gap: 30px;
+  gap: 25px;
+}
+@media only screen and (max-width: 415px) {
+  .game-aside .game-info {
+    width: 100%;
+    height: 545px;
+    position: relative;
+  }
 }
 .game-aside .game-info p, .game-aside .game-info span {
   font-weight: 400;
@@ -227,7 +292,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 10px;
 }
 .game-aside .game-info__section-title {
   color: #B4DE3E;
@@ -241,13 +306,20 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-.game-aside .game-info__section .section__item input,
-.game-aside .game-info__section .section__item input[type=number]::-webkit-inner-spin-button,
-.game-aside .game-info__section .section__item input[type=number]::-webkit-outer-spin-button {
-  opacity: 1;
+.game-aside .game-info__section .section__item input {
   width: 50px;
   text-align: center;
   font-weight: 400;
+}
+.game-aside .game-info__section .section__item input[type=number]::-webkit-inner-spin-button,
+.game-aside .game-info__section .section__item input[type=number]::-webkit-outer-spin-button {
+  opacity: 1;
+}
+@media only screen and (max-width: 415px) {
+  .game-aside .game-info__section .section__item input[type=number]::-webkit-inner-spin-button,
+.game-aside .game-info__section .section__item input[type=number]::-webkit-outer-spin-button {
+    opacity: 0;
+  }
 }
 .game-aside .game-info__section .player-2-settings input {
   background: none;
@@ -263,6 +335,92 @@ body {
 }
 .game-aside .game-info #current-players .section__item:last-child {
   background-color: gray;
+}
+.game-aside .game-info #game-type #game-type-dropdown {
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+}
+.game-aside .game-info #game-type #game-type-dropdown #dropdown-arrow-down {
+  position: absolute;
+  top: -2px;
+  right: 12px;
+  font-size: 1.6rem;
+}
+@media only screen and (max-width: 415px) {
+  .game-aside .game-info #game-type #game-type-dropdown #dropdown-arrow-down {
+    display: none;
+  }
+}
+.game-aside .game-info #game-type #game-type-dropdown__content {
+  display: none;
+  position: absolute;
+  background-color: #151201;
+  width: 100%;
+}
+@media only screen and (max-width: 415px) {
+  .game-aside .game-info #game-type #game-type-dropdown__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+  }
+}
+.game-aside .game-info #game-type #game-type-dropdown__content p:hover {
+  background: #B4DE3E;
+  color: #151201;
+}
+.game-aside .game-info #game-type #game-type-dropdown__content .option-active {
+  background-color: #B4DE3E;
+  color: #151201;
+  animation: clicked 0.4s;
+  padding: 5px 10px;
+}
+@keyframes clicked {
+  0% {
+    background-color: #151201;
+    color: #B4DE3E;
+  }
+  100% {
+    background-color: #B4DE3E;
+    color: #151201;
+  }
+}
+.game-aside .game-info #game-type #game-type-dropdown:hover #game-type-dropdown__content {
+  display: block;
+}
+@media only screen and (max-width: 415px) {
+  .game-aside .game-info #game-type #game-type-dropdown:hover #game-type-dropdown__content {
+    display: flex;
+  }
+}
+@media only screen and (max-width: 415px) {
+  .game-aside .game-info #game-type .current-game-type {
+    display: none;
+  }
+}
+.game-aside .game-info .back-arrow {
+  display: none;
+}
+@media only screen and (max-width: 415px) {
+  .game-aside .game-info .back-arrow {
+    display: block;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2rem;
+    color: #B4DE3E;
+    padding: 10px;
+  }
+}
+@media only screen and (max-width: 415px) {
+  .game-aside #game-aside__buttons #start-game-btn {
+    display: none;
+  }
 }
 .game-aside #game-aside__buttons #play-again-btn {
   display: none;
@@ -339,4 +497,62 @@ body {
 #game-chat #send-message #send-message-btn {
   width: 100%;
   padding: 2px;
+}
+
+.mobile-controls {
+  display: none;
+}
+@media only screen and (max-width: 415px) {
+  .mobile-controls {
+    display: block;
+    height: 160px;
+    width: 50%;
+    position: relative;
+  }
+  .mobile-controls__arrow {
+    height: 50px;
+    width: 50px;
+    border: 2px solid #B4DE3E;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    color: #B4DE3E;
+  }
+  .mobile-controls #mobile-controls__up {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .mobile-controls #mobile-controls__down {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .mobile-controls #mobile-controls__left {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .mobile-controls #mobile-controls__right {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .mobile-controls #mobile-settings-trigger,
+.mobile-controls #mobile-chat-trigger {
+    top: -10px;
+    position: absolute;
+    min-width: 70px;
+    font-size: 0.7rem;
+    padding: 0 5px;
+  }
+  .mobile-controls #mobile-settings-trigger {
+    left: -50%;
+  }
+  .mobile-controls #mobile-chat-trigger {
+    right: -50%;
+  }
 }

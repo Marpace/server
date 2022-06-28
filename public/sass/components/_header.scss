@@ -4,4 +4,10 @@
     letter-spacing: 5px;
     font-family: "Bungee Shade", sans-serif;
     text-align: center;
+
+    @include responsive($mobile) {
+        font-size: 3.5rem;
+        line-height: 1.5;
+        margin-top: 20px;
+    }
 }

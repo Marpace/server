@@ -1,0 +1,54 @@
+.mobile-controls {
+    display: none;
+    @include responsive($mobile) {
+        display: block;
+        height: 160px;
+        width: 50%;
+        position: relative;
+    
+    
+        &__arrow {
+            height: 50px;
+            width: 50px;
+            border: 2px solid $light_green;
+            position: absolute;
+            @include flex_centered(row);
+            color: $light_green;
+        }   
+        #mobile-controls__up {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #mobile-controls__down {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #mobile-controls__left {
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #mobile-controls__right {
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #mobile-settings-trigger,
+        #mobile-chat-trigger {
+            top: -10px;
+            position: absolute;
+            min-width: 70px;
+            font-size: .7rem;
+            padding: 0 5px;
+        }
+        #mobile-settings-trigger {
+            left: -50%;
+        }
+        #mobile-chat-trigger {
+            right: -50%;
+        }
+    }
+}

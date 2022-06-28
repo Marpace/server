@@ -6,8 +6,8 @@ const SNAKE_1_COLOUR = '#88F1D2';
 const SNAKE_2_COLOUR = '#FFEF5C';
 const FOOD_COLOUR = '#e66916';
 
-const socket = io('https://snake-race.herokuapp.com');
-// const socket = io('http://localhost:3000');
+// const socket = io('https://snake-race.herokuapp.com');
+const socket = io('http://localhost:3000');
 
 socket.on('countdown', handleCountdown);
 socket.on('init', handleInit);
@@ -30,6 +30,8 @@ socket.on('notEnoughPlayers', handleNotEnoughtPlayers)
 socket.on('updateMultiFoodCount', handleUpdateMultiFoodCount)
 socket.on('updateMultiStats', handleUpdateMultiStats);
 socket.on('updatePlayerTwoSettings', handleUpdatePlayerTwoSettings);
+socket.on('updateAllYouCanEatTimer', handleUpdateAllYouCanEatTimer);
+socket.on('updateChosenGameType', handleUpdateChosenGameType)
 
 //chat 
 socket.on('postMessage', handlePostMessage);
@@ -57,6 +59,7 @@ const gameScreen = qs("#game-screen");
 const gameOptions = qs("#game-options");
 const multiplayerScreen = qs("#multiplayer");
 const lobbyScreen = qs("#lobby-screen");
+const header = qs(".header");
 
 //message displays
 const gameMessage = qs("#game-message");
@@ -80,8 +83,14 @@ const playerOneFoodCount = qs("#player-one-food-count");
 const playerTwoFoodCount = qs("#player-two-food-count");
 const wins = qs("#wins");
 const losses = qs("#losses");
+const gameTypeOptions = qsa(".game-type__option")
+const currentGameType = qs(".current-game-type")
+const gameTypeDropdown = qs("#game-type-dropdown")
+const gameTypeHeader = qs("#game-type-header")
+
 
 //game chat 
+const gameChat = qs("#game-chat");
 const messageInput = qs("#compose-message");
 const sendMessageBtn = qs("#send-message-btn");
 const sentMessagesContainer = qs("#sent-messages");
@@ -142,7 +151,8 @@ function startGame() {
         foodCount.innerHTML = 0;
         const gameSettings = {
             mode: gameMode,
-            speed: parseInt(speedInput.value)
+            speed: parseInt(speedInput.value),
+            gameType: currentGameType.innerHTML
         };
         socket.emit('startGame', gameSettings);
     } 
@@ -151,17 +161,23 @@ function startGame() {
             mode: gameMode,
             code: playerNumber === 1 ? gameCode : joinInput.value,
             speed: parseInt(speedInput.value),
-            goal: parseInt(goalInput.value)
+            goal: parseInt(goalInput.value),
+            gameType: currentGameType.innerHTML
         }
         socket.emit('startGame', gameSettings);
     }
 }
 
 function init() {
+
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
-  
-    canvas.width = canvas.height = 600;
+    
+    if(window.screen.width < 416 ) {
+        canvas.width = canvas.height = 340;
+    } else {
+        canvas.width = canvas.height = 600;
+    }
   
     ctx.fillStyle = GRID_COLOUR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -197,8 +213,12 @@ function keydown(e) {
     }
 }
 
-function handleCountdown() {
+function handleCountdown(gameType) {
     const countdown = [3, 2, 1, 0]
+    countdownDisplay.innerHTML = "";
+    countdownDisplay.style.top = "50%",
+    countdownDisplay.style.fontSize = "6.5rem"
+    countdownDisplay.style.fontFamily = "'Bungee Shade', sans-serif"
     for(let number of countdown) {  
         setTimeout(() => {
             if(number === 0 ){
@@ -210,10 +230,25 @@ function handleCountdown() {
         countdownTimer += 1000;
     }
 }
+
+
+
+//starts timer for "All you can eat" game type and resets values when game over
+function handleUpdateAllYouCanEatTimer(seconds) {
+    countdownDisplay.style.top = "-30px",
+    countdownDisplay.style.fontSize = "1.5rem"
+    countdownDisplay.style.fontFamily = "'Bungee', sans-serif"
+    countdownDisplay.innerHTML = seconds
+}
+
+
 // single player functions /////////////////////////////////////////
 
 function newSinglePlayerGame() {
+    if(window.screen.width < 416) header.style.fontSize = "2rem";
     gameScreen.style.display = "flex";
+    gameTypeHeader.style.display = "none"
+    gameChat.style.display = "none";
     gameOptions.style.display = "none";
     currentPlayers.style.display = "none";
     gameStatsMultiplayer.style.display = "none";
@@ -231,6 +266,7 @@ function handleSinglePlayerGameState(gameState) {
 }
 
 function paintSinglePlayerGame(state) {
+
     ctx.fillStyle = GRID_COLOUR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -238,8 +274,15 @@ function paintSinglePlayerGame(state) {
     const gridsize = state.gridSize;
     const size = canvas.width / gridsize;
 
-    ctx.fillStyle = FOOD_COLOUR;
-    ctx.fillRect(food.x * size, food.y * size, size, size);
+    if(state.gameType === "All you can eat") {
+        food.forEach(piece => {
+            ctx.fillStyle = FOOD_COLOUR;
+            ctx.fillRect(piece.x * size, piece.y * size, size, size);
+        });
+    } else {
+        ctx.fillStyle = FOOD_COLOUR;
+        ctx.fillRect(food.pos.x * size, food.pos.y * size, size, size);
+    }
 
     paintPlayer(state.player, size, SNAKE_1_COLOUR);
 
@@ -267,8 +310,10 @@ function handleSinglePlayerGameOver(data) {
 // multiplayer functions /////////////////////////////////////////
 
 function newMultiplayerGame() {
+    gameChat.style.display = "flex";
     lobbyScreen.style.display = "none";
     gameStatsSinglePlayer.style.display = "none";
+    gameTypeHeader.style.display = "none";
     socket.emit('newMultiplayerGame', nicknameInput.value);
     init();
     gameMode = "multiplayer";
@@ -280,7 +325,10 @@ function joinGame() {
         codeInputMessage.innerHTML = "Please enter a game code";
         return;
     }
-    startGameBtn.style.display = "none"
+    gameChat.style.display = "flex";
+    startGameBtn.style.display = "none";
+    gameTypeDropdown.style.display = "none";
+    gameTypeHeader.style.display = "block";
     gameStatsSinglePlayer.style.display = "none";
     const code = joinInput.value;
     socket.emit('joinGame', JSON.stringify({code: code, playerTwoName: nicknameInput.value}));
@@ -317,18 +365,24 @@ function handleNotEnoughtPlayers(){
 }
 
 function paintMultiplayerGame(state) {
-  ctx.fillStyle = GRID_COLOUR;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = GRID_COLOUR;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  const food = state.food;
-  const gridsize = state.gridSize;
-  const size = canvas.width / gridsize;
+    const food = state.food;
+    const gridsize = state.gridSize;
+    const size = canvas.width / gridsize;
 
-  ctx.fillStyle = FOOD_COLOUR;
-  ctx.fillRect(food.x * size, food.y * size, size, size);
-
-  paintPlayer(state.players[0], size, SNAKE_1_COLOUR);
-  paintPlayer(state.players[1], size, SNAKE_2_COLOUR);
+    if(state.gameType === "All you can eat") {
+        food.forEach(piece => {
+        ctx.fillStyle = FOOD_COLOUR;
+        ctx.fillRect(piece.x * size, piece.y * size, size, size);
+    });
+    } else {
+        ctx.fillStyle = FOOD_COLOUR;
+        ctx.fillRect(food.pos.x * size, food.pos.y * size, size, size);
+    }
+    paintPlayer(state.players[0], size, SNAKE_1_COLOUR);
+    paintPlayer(state.players[1], size, SNAKE_2_COLOUR);
 }
 
 function handleInit(number) {
@@ -340,6 +394,10 @@ function handleInit(number) {
     }
     gameScreen.style.display = "flex";
     multiplayerScreen.style.display = "none";
+}
+
+function handleUpdateChosenGameType(gameType) {
+    currentGameType.innerHTML = gameType;
 }
 
 function handleMultiplayerGameState(gameState) {
@@ -451,3 +509,68 @@ function handlePostMessage(data) {
         newMessage.classList.add("incoming-message");
     }
 }
+
+gameTypeOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        if(option.innerHTML === "Pedal to the metal") {
+            console.log("Pedal to the metal")
+            speedInput.disabled = true;
+            goalInput.disabled = false;
+        } 
+        if (option.innerHTML === "All you can eat"){
+            goalInput.disabled = true;
+            speedInput.disabled = false;
+        }
+        if(option.innerHTML === "Classic" || option.innerHTML === "Live bait") {
+            goalInput.disabled = false;
+            speedInput.disabled = false;
+        }
+        gameTypeOptions.forEach( option => {
+            option.classList.remove("option-active")
+        });
+        option.classList.add("option-active") 
+        currentGameType.innerHTML = option.innerHTML;
+        const data = {
+            gameCode: gameCode,
+            gameType: option.innerHTML
+        }
+        socket.emit('chosenGameType', data)
+    })
+});
+
+
+// MOBILE //////////////////////////////////////
+const mobileSettingsBtn = qs("#mobile-settings-trigger");
+const mobileChatBtn = qs("#mobile-chat-trigger");
+const gameAside = qs(".game-aside");
+const backArrow = qs(".back-arrow");
+const mobileControlArrows = Array.from(qsa(".mobile-controls__arrow"));
+const mobileStartGameBtn = qs("#mobile-start-game-btn");
+
+mobileStartGameBtn.addEventListener('click', startGame)
+
+mobileSettingsBtn.addEventListener('click', () => {
+    gameAside.style.left = "50%";
+    gameAside.style.transform = "translateX(-50%)"
+});
+
+backArrow.addEventListener('click', () => {
+    gameAside.style.left = "-110%"
+});
+
+mobileControlArrows.forEach(arrow => {
+    arrow.addEventListener('click', () => {
+        if(arrow.classList.contains("up")){
+            socket.emit('keydown', {gameMode: gameMode, keyCode: "38"})
+        }
+        if(arrow.classList.contains("down")){
+            socket.emit('keydown', {gameMode: gameMode, keyCode: "40"})
+        }
+        if(arrow.classList.contains("left")){
+            socket.emit('keydown', {gameMode: gameMode, keyCode: "37"})
+        }
+        if(arrow.classList.contains("right")){
+            socket.emit('keydown', {gameMode: gameMode, keyCode: "39"})
+        }
+    });
+});

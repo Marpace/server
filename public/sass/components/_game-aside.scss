@@ -2,16 +2,28 @@
     @include flex_centered(column); 
     justify-content: space-between;
     height: 600px;
-
+    @include responsive($mobile) {
+        position: absolute;
+        left: -110%;
+        z-index: 1000;
+        transition: .5s ease-in-out;
+        width: 100%;
+    }
+    
     .game-info {
-        width: 200px;
+        width: 230px;
         height: 525px;
         padding: 25px;
         background-color: $very_dark_green;
         @include flex_centered(column);
         flex-wrap: nowrap;
         justify-content: flex-start;
-        gap: 30px;
+        gap: 25px;
+        @include responsive($mobile) {
+            width: 100%;
+            height: 545px;
+            position: relative;
+        }
     
         p, span {
             font-weight: 400;
@@ -19,7 +31,7 @@
         &__section {
             width: 100%;
             @include flex_centered(column);
-            gap: 20px;
+            gap: 10px;
     
             &-title {
                 color: $light_green;
@@ -33,13 +45,20 @@
                 justify-content: space-between;
                 align-items: center;
     
-                input,
-                input[type=number]::-webkit-inner-spin-button, 
-                input[type=number]::-webkit-outer-spin-button {  
-                    opacity: 1;
+                input {
                     width: 50px;
                     text-align: center;
                     font-weight: 400;
+                }
+                input[type=number]::-webkit-inner-spin-button, 
+                input[type=number]::-webkit-outer-spin-button {  
+                    opacity: 1;
+                }
+                @include responsive($mobile) {
+                    input[type=number]::-webkit-inner-spin-button, 
+                    input[type=number]::-webkit-outer-spin-button {
+                        opacity: 0;
+                    }
                 }
             }
             .player-2-settings {
@@ -65,11 +84,89 @@
                 background-color: gray;
             } 
         }
+        #game-type {
+            #game-type-dropdown {
+                width: 100%;
+                position: relative;
+                cursor: pointer;
+
+                #dropdown-arrow-down {
+                    position: absolute;
+                    top: -2px;
+                    right: 12px;
+                    font-size: 1.6rem;
+                    @include responsive($mobile) {
+                        display: none;
+                    }
+                }
+                &__content {
+                    display: none;
+                    position: absolute;
+                    background-color: $very_dark_green;
+                    width: 100%;
+                    @include responsive($mobile) {
+                        @include flex_centered(column);
+                        align-items: flex-start;
+                        gap: 10px;
+                        margin-top: 10px;
+                    }
+
+                    p:hover {
+                        background: $light_green;
+                        color: $very_dark_green;
+                    }
+                    .option-active {
+                        background-color: $light_green;
+                        color: $very_dark_green;
+                        animation: clicked .4s;
+                        padding: 5px 10px;
+                    }
+                    @keyframes clicked {
+                        0% {
+                            background-color: $very_dark_green;
+                            color: $light_green;
+                        }
+                        100% {
+                            background-color: $light_green;
+                            color: $very_dark_green;
+                        }
+                    }
+                }
+                &:hover #game-type-dropdown__content {
+                    display: block;
+                    @include responsive($mobile) {
+                        display: flex;
+                    }
+                }
+            }
+            .current-game-type {
+                @include responsive($mobile) {
+                    display: none;
+                }
+            }
+        }
+        .back-arrow {
+            display: none;
+            @include responsive($mobile) {
+                display: block;
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                font-size: 2rem;
+                color: $light_green;
+                padding: 10px;
+            }
+        }
     }
     #game-aside__buttons {
-        
+        #start-game-btn {
+            @include responsive($mobile) {
+                display: none;
+            }
+        }
         #play-again-btn {
             display: none;
         }
     }
 }
+

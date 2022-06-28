@@ -2,6 +2,9 @@
     @include flex_centered(column);
     gap: 50px;
     margin-top: 50px;
+    @include responsive($mobile) {
+        margin-top: 20px;
+    }
     
 
     #game-options { 

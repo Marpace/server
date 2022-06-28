@@ -9,26 +9,62 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Roboto+Condensed:wght@500&display=swap" rel="stylesheet">
+
+    
+
 </head>
 <body style="display: flex; justify-content: center; align-items: center">
-    <aside id="game-chat" class="game-aside">
-        <div id="chat">
-            <div id="sent-messages">
-                <div class="chat-message incoming-message">
-                    <p>This is a test message for the game Snake Race</p>
+    <aside class="game-aside">
+
+        <div class="game-info">
+            
+            <div id="game-settings" class="game-info__section">
+                <p class="game-info__section-title">Settings</p>
+                <div id="goal-setting" class="section__item">
+                    <p>Goal</p>
+                    <input id="goal-input" type="number" value="10" min="3" max="100">
                 </div>
-                <div class="chat-message outgoing-message">
-                    <p>This is a test message for the game Snake Race</p>
+                <div id="speed-setting" class="section__item">
+                    <p>Speed</p>
+                    <input id="speed-input" type="number" value="5" min="1" max="20">
                 </div>
-                <div class="chat-message incoming-message">
-                    <p>This is a test message for the game Snake Race</p>
+            </div>
+            
+            <div id="game-stats-single-player" class="game-info__section">
+                <p class="game-info__section-title">Stats</p>
+                <div class="section__item">
+                    <p>Highscore</p>
+                    <span id="highscore">0</span>
+                </div>
+                <div class="section__item">
+                    <p>Games played</p>
+                    <span id="games-played">0</span>
+                </div>
+                <div class="section__item">
+                    <p>Food count</p>
+                    <span id="food-count">0</span>
+                </div>
+            </div>
+            <div id="game-type" class="game-info__section">
+                <div id="game-type-dropdown" class="game-info__section-title">
+                    <span id="game-type-dropdown__title">Choose game type </span><span id="dropdown-arrow-down">▾</span>
+                    <div id="game-type-dropdown__content">
+                        <p class="game-type__option option-active">Classic</p>
+                        <p class="game-type__option">Live bait</p>
+                        <p class="game-type__option">Pedal to the metal</p>
+                        <p class="game-type__option">All you can eat</p>
+                    </div>
+                </div>
+                <div class="section__item current-game-type">
+                    <p>Classic</p>
                 </div>
             </div>
         </div>
-        <div id="send-message">
-            <input id="compose-message" type="text" placeholder="Send message...">
-            <button id="send-message-btn" class="lobby-btn">Send</button>
+        <div id="game-aside__buttons">
+            <button id="start-game-btn" class="lobby-btn">Start Game</button>
+            <button id="play-again-btn" class="lobby-btn">Play again</button>
         </div>
     </aside>
+    <script src="https://kit.fontawesome.com/da7d263600.js" crossorigin="anonymous"></script>
 </body>
 </html>
