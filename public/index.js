@@ -6,8 +6,8 @@ const SNAKE_1_COLOUR = '#88F1D2';
 const SNAKE_2_COLOUR = '#FFEF5C';
 const FOOD_COLOUR = '#e66916';
 
-// const socket = io('https://snake-race.herokuapp.com');
-const socket = io('http://localhost:3000');
+const socket = io('https://snake-race.herokuapp.com');
+// const socket = io('http://localhost:3000');
 
 socket.on('countdown', handleCountdown);
 socket.on('init', handleInit);
