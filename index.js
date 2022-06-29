@@ -84,7 +84,7 @@ io.on('connection', (socket) => {
         return;
       }
       io.sockets.in(code)
-      .emit("countdown", game.gameType)
+      .emit("countdown")
       io.sockets.in(code)
       .emit("reset")
       io.sockets.in(code)
@@ -95,6 +95,7 @@ io.on('connection', (socket) => {
       }, 4000);
     }
   }
+
   // function handleStartGame(game){
   //   FRAME_RATE = game.speed + 6
 
@@ -157,18 +158,18 @@ io.on('connection', (socket) => {
 
 
   //starts timer for "All you can eat" game type and resets values when game over
-  function allYouCanEatTimer(seconds) {
+  // function allYouCanEatTimer(seconds) {
     
-    const intervalId = setInterval(() => {
-      socket.emit('updateAllYouCanEatTimer', seconds)
-        seconds--
-        if(seconds < 1){
-            clearInterval(intervalId)
-            return true;
-        } 
-        return false;
-    }, 1000);
-  }
+  //   const intervalId = setInterval(() => {
+  //     socket.emit('updateAllYouCanEatTimer', seconds)
+  //       seconds--
+  //       if(seconds < 1){
+  //           clearInterval(intervalId)
+  //           return true;
+  //       } 
+  //       return false;
+  //   }, 1000);
+  // }
 
 
   function startSinglePlayerGameTimeout(state) {
@@ -224,6 +225,7 @@ io.on('connection', (socket) => {
         singlePlayerState = createSinglePlayerState();
         clearInterval(gameIntervalId);
         singlePlayerFoodCount = 0;
+        allYouCanEatSeconds = 60;
       }
     }, 1000 / FRAME_RATE);
   }
@@ -346,7 +348,10 @@ function startMultiplayerGameInterval(roomName) {
       }
     }
     else {
-      if(multiplayerState[roomName].gameType === "All you can eat") clearInterval(timerIntervalId);
+      if(multiplayerState[roomName].gameType === "All you can eat") {
+        clearInterval(timerIntervalId);
+        allYouCanEatSeconds = 60;
+      };
       emitMultiplayerGameOver(roomName, result.winner, gameIntervalId)
     }
     

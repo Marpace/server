@@ -48,6 +48,7 @@ function createSinglePlayerState(gameType) {
         player: player,
         food: food,
         gridSize: GRID_SIZE,
+        gameMode: "singlePlayer",
         gameType: gameType
     }
 };

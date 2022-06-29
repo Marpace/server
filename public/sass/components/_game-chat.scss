@@ -44,10 +44,34 @@
                 }
             }
             .incoming-message {
-                align-self: flex-start
+                align-self: flex-start;
+                position: relative;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    bottom: -5px;
+                    left: -2px;
+                    height: 15px;
+                    width: 15px;
+                    border-radius: 50%;
+                    border-right: 5px solid #e7e7e7;
+                }
             }
             .outgoing-message {
-                align-self: flex-end
+                align-self: flex-end;
+                position: relative;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    bottom: -5px;
+                    right: -2px;
+                    height: 15px;
+                    width: 15px;
+                    border-radius: 50%;
+                    border-left: 5px solid #e7e7e7;
+                }
             }
         }
     }
