@@ -1,70 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Styles -->
-    <link type="" rel="stylesheet" href="../sass/main.css">
-
-    <title>Snake Game</title>
-</head>
-<body>
-    <main>
-        <h1 class="header">Snake Race</h1>
-        <div id="lobby-screen">
-            <div id="game-options">
-                <button id="single-player-btn" class="lobby-btn">Single player</button>
-                <button id="multiplayer-btn" class="lobby-btn">Multiplayer</button>
-                <div id="enter-nickname">
-                    <input id="nickname-input" class="lobby-input" type="text" placeholder="Enter nickname">
-                    <button id="continue-btn" class="lobby-btn">Continue</button>
-                    <p id="nickname-message">Please enter a nickname</p>
-                </div>
-            </div>
-            <div id="multiplayer">
-                <h1 id="welcome-message"></h1>
-                <button id="create-game-btn" class="lobby-btn">Create new game</button>
-                <hr class="divider">
-                <dive id="join-game">
-                    <input id="join-input" class="lobby-input" type="text" placeholder="Enter game code" required>
-                    <button id="join-game-btn" class="lobby-btn">Join Game</button>
-                    <p id="code-input-message" class="text-info">Please enter a game code</p>
-                </dive>
-                <button id="back-btn" class="lobby-btn back-btn">Back</button>
-            </div>
+<%- include("partials/header") -%>
+<main>
+    <h1 class="header">Snake Race</h1>
+    <div id="home-screen">
+        <div id="game-options">
+            <a id="single-player-btn" class="lobby-btn" href="/single-player-game">Single player</a>
+            <label for="multiplayer-input" class="multiplayer-btn lobby-btn">Multiplayer</label>
+            <% if(tryAgain) { %>
+                <input type="checkbox" id="multiplayer-input" checked>
+            <% } else { %>
+                <input type="checkbox" id="multiplayer-input" autocomplete="off">
+            <% } %>
+            <form action="/multiplayer-lobby" method="POST" id="enter-nickname">
+                <input name="nickname" id="nickname-input" class="lobby-input" type="text" placeholder="Enter nickname">
+                <button type="submit" id="continue-btn" class="lobby-btn">Continue</button>
+                <p id="nickname-message"><%= message %></p>
+            </form>
         </div>
-        <div id="game-screen">
-            <%- include('partials/game-aside') -%>
-            <div class="grid-container">
-                <h1 id="countdown"></h1>
-                <h1 id="game-message"></h1>
-                <canvas id="canvas"></canvas>
-                <div id="game-code-div">
-                    <p id="your-game-code" class="text-info"></p>
-                    <p class="text-info">controls: ← ↑ → ↓</p>
-                </div>
-            </div>
-            <div class="mobile-controls">
-                <button id="mobile-settings-trigger" class="lobby-btn">Settings</button>
-                <button id="mobile-chat-trigger" class="lobby-btn">Chat</button>
-                <div id="mobile-controls__up" class="mobile-controls__arrow up">▲</div>
-                <div id="mobile-controls__down" class="mobile-controls__arrow down">▼</div>
-                <div id="mobile-controls__left" class="mobile-controls__arrow left">◀</div>
-                <div id="mobile-controls__right" class="mobile-controls__arrow right">▶</div>
-            </div>
-            <button id="mobile-start-game-btn" class="lobby-btn">Start game</button>
-            <%- include('partials/game-chat') -%>
-        </div>
-
-    </main>
-
-    <!-- <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script> -->
-   
-    
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/main.js" type="module"></script>
-</body>
-</html>
+    </div>
+</main>
+<%- include("partials/footer") -%>
 

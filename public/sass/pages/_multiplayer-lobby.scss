@@ -1,0 +1,26 @@
+#multiplayer {
+    @include flex_centered(column);
+    gap: 30px;
+    
+    #welcome-message {
+        font-size: 1.5rem;
+        color: $light_green;
+        font-family: "Bungee", sans-serif;
+    }
+    .divider {
+        width: 100%;
+        border: 1px solid $light_green;
+    }
+    #join-game {
+        @include flex_centered(column);
+
+        #code-input-message {
+            margin-top: 20px;
+        }
+    }
+    #back-btn {
+        min-width: fit-content;
+        padding: 5px 20px;
+        margin-top: 50px;
+    }
+}

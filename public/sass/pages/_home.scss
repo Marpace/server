@@ -1,0 +1,33 @@
+#home-screen {
+    @include flex_centered(column);
+    gap: 50px;
+    margin-top: 50px;
+    @include responsive($mobile) {
+        margin-top: 20px;
+    }
+    
+
+    #game-options { 
+        @include flex_centered(column);
+        gap: 50px;
+
+        #enter-nickname {
+            @include flex_centered(column);
+            flex-wrap: nowrap;
+            gap: 10px;
+            opacity: 0;
+            transition: .3s;
+
+            #nickname-message {
+                color: $light_green;
+                margin-top: 20px;
+            }
+        }
+        #multiplayer-input {
+            display: none
+        }
+        #multiplayer-input:checked + #enter-nickname {
+            opacity: 1;    
+        }
+    }
+}

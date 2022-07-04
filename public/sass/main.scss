@@ -5,10 +5,12 @@
 @import "base/typography";
 
 @import "components/header"; 
-@import "components/game"; 
-@import "components/lobby"; 
 @import "components/lobby-button";
 @import "components/lobby-input";
-@import "components/game-aside";
+@import "components/game-settings";
 @import "components/game-chat";
 @import "components/mobile-controls";
+
+@import "pages/home"; 
+@import "pages/multiplayer-lobby"; 
+@import "pages/game"; 

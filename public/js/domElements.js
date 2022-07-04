@@ -18,6 +18,9 @@ export const joinInput = qs("#join-input");
 export const nicknameInput = qs("#nickname-input");
 export const goalInput = qs("#goal-input");
 export const speedInput = qs("#speed-input");
+export const playerNumber = qs("#player-number");
+export const nickname = qs("#nickname");
+export const gameCode = qs("#game-code");
 
 //screens
 export const gameScreen = qs("#game-screen");

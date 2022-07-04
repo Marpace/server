@@ -1,0 +1,22 @@
+<%- include("partials/header") -%>
+    <main>
+        <h1 class="header">Snake Race</h1>
+            <div id="multiplayer">
+                <h1 id="welcome-message"></h1>
+                <form action="/create-game" method="POST">
+                    <input type="hidden" name="nicknameOne" value=<%=nickname%>>
+                    <button id="create-game-btn" class="lobby-btn">Create new game</button>
+                </form>
+                <hr class="divider">
+                <form action="/join-game" method="post" id="join-game">
+                    <input name="gameCode" id="join-input" class="lobby-input" type="text" placeholder="Enter game code" required>
+                    <input type="hidden" name="nicknameTwo" value=<%=nickname%>>
+                    <button id="join-game-btn" class="lobby-btn">Join Game</button>
+                    <p id="code-input-message" class="text-info"><%= message %></p>
+                </form>
+                <a id="back-btn" class="lobby-btn back-btn" href="/">Back</a>
+            </div>
+        </div>
+    </main>
+<%- include("partials/footer") -%>
+

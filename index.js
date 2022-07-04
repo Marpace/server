@@ -5,25 +5,21 @@ const { emit } = require('process');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {cors: {origin: "*"}});
+
+
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 const { 
   createMultiplayerGameState, 
   multiplayerGameLoop, 
   getMultiplayerUpdatedVelocity 
 } = require('./multiplayer-game');
-const {
-  singlePlayerGameLoop, 
-  getSinglePlayerUpdatedVelocity, 
-  createSinglePlayerState,
-
-} = require('./single-player-game');
 const { makeId } = require("./utils");
 
 let FRAME_RATE;
-let singlePlayerState;
 const multiplayerState = {};
 const socketRooms = {};
 const rooms = {};
-let singlePlayerFoodCount = 0;
 let playerOneFoodCount = 0;
 let playerTwoFoodCount = 0;
 let multiplayerGoal;
@@ -37,7 +33,56 @@ app.set('view engine', 'ejs');
 
 
 app.get('/', (req, res) => {
-  res.render("index");
+  res.render("index", {message: req.message, tryAgain: false});
+});
+
+app.get('/single-player-game', (req, res) => {
+  res.render("single-player-game");
+});
+
+app.post('/create-game', (req, res) => {
+  const nickname = req.body.nicknameOne;
+  res.render('multiplayer-game', {
+    playerNumber: 1, 
+    nickname: nickname,
+    joinGame: false
+  })
+});
+
+app.post('/join-game', (req, res) => {
+  const nickname = req.body.nicknameTwo;
+  const gameCode = req.body.gameCode
+
+  if(!rooms[gameCode]) {
+    res.render('multiplayer-lobby', {nickname: nickname, message: "Invalid code!"})
+  } else if (rooms[gameCode].playerCount > 1) {
+    res.render('multiplayer-lobby', {nickname: nickname, message: "Room is full!"})
+  } else {
+    res.render('multiplayer-game', {
+      playerNumber: 2, 
+      nickname: nickname,
+      gameCode: gameCode,
+      joinGame: true
+    })
+  }
+});
+
+app.post('/multiplayer-lobby', (req, res) => {
+  const nickname = req.body.nickname;
+  if(nickname === "") {
+    res.render("index", {
+      message: "Please enter a nickname to continue", 
+      tryAgain: true
+    })
+  } else if(nickname.length > 10) {
+    res.render("index", {
+      message: "Nickname cannot be longer than 10 characters", 
+      tryAgain: true
+    })
+  }  
+  else {
+    res.render("multiplayer-lobby", {nickname: nickname, message: ""});
+  }
 });
   
 io.on('connection', (socket) => {   
@@ -47,90 +92,40 @@ io.on('connection', (socket) => {
   socket.on("newMultiplayerGame", handleNewMultiplayerGame);
   socket.on("joinGame", handleJoinGame);
   socket.on('sendMessage', handleSendMessage);
-  socket.on('chosenGameType', handleChosenGameType)
+  socket.on('chosenGameType', handleChosenGameType);
+  socket.on('switchPlayerNumber', handleSwitchPlayerNumber);
   
 
   function handleStartGame(game){
-    if (game.gameType === "Pedal to the metal") {
+    const code = game.code;
+    const goal = game.goal;
+    const speed = game.speed;
+    const gameType = game.gameType;
+
+    if (gameType === "Pedal to the metal") {
       FRAME_RATE = 5
     } else {
-      FRAME_RATE = game.speed + 6
+      FRAME_RATE = speed + 6
     }
-
-    if(game.mode === "singlePlayer") {
-      singlePlayerState = createSinglePlayerState(game.gameType);
-      socket.emit("countdown", game.gameType);
-      setTimeout(() => {
-        if(game.gameType === "Pedal to the metal") {
-          startSinglePlayerGameTimeout(singlePlayerState)
-        } else {
-          startSinglePlayerGameInterval(singlePlayerState);
-        }
-      }, 4000);
+    const settings = {
+      goal: goal,
+      speed: speed
     }
-    if(game.mode === "multiplayer") {
-      const code = game.code;
-      multiplayerState[code] = createMultiplayerGameState(game.gameType);
+    multiplayerState[code] = createMultiplayerGameState(gameType);
+    multiplayerGoal = goal;
 
-      multiplayerGoal = game.goal;
-
-      const settings = {
-        goal: game.goal,
-        speed: game.speed
-      }
-
-      if(rooms[code].playerCount < 2){
-        socket.emit('notEnoughPlayers')
-        return;
-      }
-      io.sockets.in(code)
-      .emit("countdown")
-      io.sockets.in(code)
-      .emit("reset")
-      io.sockets.in(code)
-      .emit("updatePlayerTwoSettings", settings)
-      setTimeout(() => {
-        if(game.gameType === "Pedal to the metal") startMultiplayerGameTimeout(code)
-        else startMultiplayerGameInterval(code)
-      }, 4000);
+    if(rooms[code].playerCount < 2){
+      socket.emit('notEnoughPlayers')
+      return;
     }
+    io.sockets.in(code).emit("countdown")
+    io.sockets.in(code).emit("reset")
+    io.sockets.in(code).emit("updatePlayerTwoSettings", settings)
+    setTimeout(() => {
+      if(gameType === "Pedal to the metal") startMultiplayerGameTimeout(code)
+      else startMultiplayerGameInterval(code)
+    }, 4000);
   }
-
-  // function handleStartGame(game){
-  //   FRAME_RATE = game.speed + 6
-
-  //   if(game.mode === "singlePlayer") {
-  //     singlePlayerState = createSinglePlayerState();
-  //     socket.emit("countdown");
-  //     setTimeout(() => {
-  //       startSinglePlayerGameInterval(singlePlayerState);
-  //     }, 4000);
-  //   }
-  //   if(game.mode === "multiplayer") {
-  //     const code = game.code;
-  //     multiplayerGoal = game.goal;
-
-  //     const settings = {
-  //       goal: game.goal,
-  //       speed: game.speed
-  //     }
-
-  //     console.log(multiplayerGoal)
-  //     if(rooms[code].playerCount < 2){
-  //       socket.emit('notEnoughPlayers')
-  //       return;
-  //     }
-  //     io.sockets.in(code)
-  //     .emit("countdown")
-  //     io.sockets.in(code)
-  //     .emit("reset")
-  //     io.sockets.in(code)
-  //     .emit("updatePlayerTwoSettings", settings)
-  //     setTimeout(() => {
-  //       startMultiplayerGameInterval(code)
-  //     }, 4000);
-  //   }
-  // }
 
   function handleKeydown(data) {
     let keyCode = data.keyCode;
@@ -141,106 +136,25 @@ io.on('connection', (socket) => {
       console.error(e);
       return;
     }
-    if(mode === "singlePlayer") {
-      const vel = getSinglePlayerUpdatedVelocity(keyCode, singlePlayerState);
-      if(vel) {
-        singlePlayerState.player.vel = vel;
-      }
-    }
-    if(mode === "multiplayer") {
-      const code = socketRooms[socket.id]
-      const vel = getMultiplayerUpdatedVelocity(keyCode, multiplayerState[code], socket.number - 1);
-      if(vel) {
-        multiplayerState[code].players[socket.number -1].vel = vel;
-      }
+    const code = socketRooms[socket.id]
+    const vel = getMultiplayerUpdatedVelocity(keyCode, multiplayerState[code], socket.number - 1);
+    if(vel) {
+      multiplayerState[code].players[socket.number -1].vel = vel;
     }
   }
-
-
-  //starts timer for "All you can eat" game type and resets values when game over
-  // function allYouCanEatTimer(seconds) {
-    
-  //   const intervalId = setInterval(() => {
-  //     socket.emit('updateAllYouCanEatTimer', seconds)
-  //       seconds--
-  //       if(seconds < 1){
-  //           clearInterval(intervalId)
-  //           return true;
-  //       } 
-  //       return false;
-  //   }, 1000);
-  // }
-
-
-  function startSinglePlayerGameTimeout(state) {
-    setTimeout(() => {
-      const result = singlePlayerGameLoop(state);
-      if(!result.winner) {
-        socket.emit("singlePlayerGameState", JSON.stringify(state));
-        if(result.foodEaten) {
-          singlePlayerFoodCount++;
-          FRAME_RATE++;
-          socket.emit('updateSingleFoodCount', singlePlayerFoodCount);
-        }
-        startSinglePlayerGameTimeout(state);
-      } else {
-        socket.emit("singlePlayerGameOver", singlePlayerFoodCount);
-        singlePlayerState = createSinglePlayerState();
-        singlePlayerFoodCount = 0;
-      }
-    }, 1000 / FRAME_RATE);
-  }
-
-  function startSinglePlayerGameInterval(state) {
-    let timerIntervalId;
-    if(state.gameType === "All you can eat") {
-      timerIntervalId = setInterval(() => {
-        socket.emit('updateAllYouCanEatTimer', allYouCanEatSeconds)
-          allYouCanEatSeconds--
-          if(allYouCanEatSeconds < 0 ){
-              clearInterval(timerIntervalId)
-              socket.emit("singlePlayerGameOver", singlePlayerFoodCount);
-              singlePlayerState = createSinglePlayerState();
-              clearInterval(gameIntervalId);
-              singlePlayerFoodCount = 0;
-              allYouCanEatSeconds = 60;
-          } 
-          
-      }, 1000);
-    }
-    const gameIntervalId = setInterval(() => {
-      const result = singlePlayerGameLoop(state);
-      if(!result.winner) {
-        socket.emit("singlePlayerGameState", JSON.stringify(state));
-        if(result.foodEaten) {
-          singlePlayerFoodCount++;
-          if (state.gameType === "Pedal to the metal") {
-            FRAME_RATE++;
-          }
-          socket.emit('updateSingleFoodCount', singlePlayerFoodCount);
-        }
-      } else if(result.winner) {
-        if(state.gameType === "All you can eat") clearInterval(timerIntervalId);
-        socket.emit("singlePlayerGameOver", singlePlayerFoodCount);
-        singlePlayerState = createSinglePlayerState();
-        clearInterval(gameIntervalId);
-        singlePlayerFoodCount = 0;
-        allYouCanEatSeconds = 60;
-      }
-    }, 1000 / FRAME_RATE);
-  }
-
-
-
-
-  // multiplayer functions ///////////////////////////////////////////
 
   function handleNewMultiplayerGame(name) {
     let roomName = makeId(5);
     socketRooms[socket.id] = roomName;
     socket.emit("gameCode", roomName)
 
-    rooms[roomName] = {playerCount: 1, playerOneName: name, playerTwoName: null}; 
+    rooms[roomName] = {
+      playerCount: 1, 
+      playerOneName: name, 
+      playerTwoName: null,
+      playerOneId: socket.id,
+      playerTwoId: null
+    }; 
  
     socket.join(roomName);
     socket.number = 1;
@@ -250,9 +164,8 @@ io.on('connection', (socket) => {
 
   function handleJoinGame(data){
 
-    const parsedData = JSON.parse(data);
-    const gameCode = parsedData.code;
-    const playerTwo = parsedData.playerTwoName
+    const gameCode = data.code;
+    const playerTwo = data.playerTwoName
     socketRooms[socket.id] = gameCode;
     
     if(!rooms[gameCode]) {
@@ -263,17 +176,22 @@ io.on('connection', (socket) => {
       return;
     }
     
+    socket.broadcast.emit('postMessage', {
+      author: "server",
+      message: `${playerTwo} joined the game`
+    })
     rooms[gameCode].playerCount = 2;
     rooms[gameCode].playerTwoName = playerTwo;
+    rooms[gameCode].playerTwoId = socket.id;
     socket.join(gameCode);
     socket.number = 2;
     socket.emit("init", 2);
 
     io.sockets.in(gameCode)
-    .emit('displayPlayerNames', 
-      JSON.stringify({playerOne: rooms[gameCode].playerOneName, 
-      playerTwo: playerTwo})
-    )
+    .emit('displayPlayerNames', {
+      playerOne: rooms[gameCode].playerOneName, 
+      playerTwo: playerTwo
+    });
   }
 
   function handleSendMessage(data) {
@@ -282,14 +200,57 @@ io.on('connection', (socket) => {
     .emit('postMessage', data)
   }
 
-  socket.on('disconnect', () => {
-    const room = rooms[socketRooms[socket.id]]
+  function handleSwitchPlayerNumber() {
+    socket.number = 1;
+  }
+
+  socket.on('disconnecting', () => {
+    const code = socketRooms[socket.id];
+    const room = rooms[code];
+    const playerOneName = room.playerOneName;
+    const playerTwoName = room.playerTwoName;
+    const playerOneId = room.playerOneId
+    const playerTwoId = room.playerTwoId
     if(room) {
       room.playerCount--
+      if(room.playerCount < 1) {
+        rooms[code] = null;
+        return;
+      }
+      if(socket.number === 1) {
+        socket.broadcast.emit('playerLeft', code)
+        socket.broadcast.emit('postMessage', {
+          author: "server", 
+          message: `${playerOneName} left the game`
+        })
+        socket.broadcast.emit('displayPlayerNames', {
+          playerOne: playerTwoName,
+          playerTwo: "Awaiting player..." 
+        })
+        room.playerOneName = room.playerTwoName;
+        room.playerOneId = room.playerTwoId;
+        room.playerTwoName = null;
+        room.playerTwoId = null;
+
+      }
+      if(socket.number === 2) {
+        socket.broadcast.emit('playerLeft')
+        socket.broadcast.emit('postMessage', {
+          author: "server", 
+          message: `${playerTwoName} left the game`
+        });
+        socket.broadcast.emit('displayPlayerNames', {
+          playerOne: playerOneName,
+          playerTwo: "Awaiting player..." 
+        })
+        room.playerTwoName = null;
+        room.playerTwoId = null;
+      }
     }
   })
-
 });
+
+
 function startMultiplayerGameTimeout(roomName) {
   setTimeout(() => {
     const gameType = multiplayerState[roomName].gameType;
@@ -361,7 +322,7 @@ function startMultiplayerGameInterval(roomName) {
 function emitMultiplayerGameState(gameCode, foodEaten) {
   const gameType = multiplayerState[gameCode].gameType;
   io.sockets.in(gameCode)
-  .emit("multiplayerGameState", JSON.stringify(multiplayerState[gameCode]));
+  .emit("multiplayerGameState", multiplayerState[gameCode]);
   if(foodEaten === 1) playerOneFoodCount++
   if(foodEaten === 2) playerTwoFoodCount++
   if(gameType === "Pedal to the metal" && foodEaten !== false) FRAME_RATE++
@@ -385,8 +346,6 @@ function handleChosenGameType(data) {
   io.sockets.in(data.gameCode)
   .emit('updateChosenGameType', data.gameType)
 }
-
-
 
 
 server.listen(port, () => {

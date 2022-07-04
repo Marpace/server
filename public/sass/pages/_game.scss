@@ -2,7 +2,7 @@
     @include flex_centered(row);
     align-items: flex-start;
     gap: 30px;
-    display: none;
+    // display: none;
     @include responsive($mobile) {
         flex-direction: column;
         align-items: center;

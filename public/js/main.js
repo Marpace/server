@@ -3,94 +3,57 @@ const qsa = (el) => {return document.querySelectorAll(el)}
 
 import * as DOM from "./domElements.js"
 import * as G from "./gameplay/game.js";
-import * as SP from "./gameplay/singlePlayer.js"
-import * as MP from "./gameplay/multiplayer.js"
+// import * as MP from "./gameplay/multiplayer.js"
 
 
-const socket = io('https://snake-race.herokuapp.com');
-// const socket = io('http://localhost:3000');
+
+// const socket = io('https://snake-race.herokuapp.com');
+const socket = io('http://localhost:3000');
 
 socket.on('countdown', G.handleCountdown);
-
-//single player
-socket.on('singlePlayerGameState', G.handleGameState);
-socket.on('singlePlayerGameOver', SP.handleSinglePlayerGameOver);
-socket.on('updateSingleFoodCount', SP.handleUpdateSingleFoodCount)
-
-//multiplayer
 socket.on('multiplayerGameState', G.handleGameState);
-socket.on('multiplayerGameOver', MP.handleMultiplayerGameOver);
-socket.on('gameCode', MP.handleGameCode);
-socket.on('unknownCode', MP.handleUnknownCode);
-socket.on('tooManyPlayers', MP.handleTooManyPlayers);
-socket.on('displayPlayerOne', MP.handleDisplayPlayerOne)
-socket.on('displayPlayerNames', MP.handleDisplayPlayerNames)
-socket.on('notEnoughPlayers', MP.handleNotEnoughtPlayers)
-socket.on('updateMultiFoodCount', MP.handleUpdateMultiFoodCount)
-socket.on('updateMultiStats', MP.handleUpdateMultiStats);
-socket.on('init', MP.handleInit);
-socket.on('updatePlayerTwoSettings', MP.handleUpdatePlayerTwoSettings);
+socket.on('multiplayerGameOver', handleMultiplayerGameOver);
+socket.on('gameCode', handleGameCode);
+socket.on('unknownCode', handleUnknownCode);
+socket.on('tooManyPlayers', handleTooManyPlayers);
+socket.on('displayPlayerOne', handleDisplayPlayerOne)
+socket.on('displayPlayerNames', handleDisplayPlayerNames)
+socket.on('notEnoughPlayers', handleNotEnoughtPlayers)
+socket.on('updateMultiFoodCount', handleUpdateMultiFoodCount)
+socket.on('updateMultiStats', handleUpdateMultiStats);
+socket.on('init', handleInit);
+socket.on('updatePlayerTwoSettings', handleUpdatePlayerTwoSettings);
 socket.on('updateAllYouCanEatTimer', G.handleUpdateAllYouCanEatTimer);
-socket.on('updateChosenGameType', MP.handleUpdateChosenGameType)
+socket.on('updateChosenGameType', handleUpdateChosenGameType);
+socket.on('playerLeft', handlePlayerLeft)
 
-//chat 
 socket.on('postMessage', handlePostMessage);
 
-let countdownTimer = 1000;  
 
 let gameMode = "";
-let playerNumber; 
-let gameCode;
+let playerNumber = parseInt(DOM.playerNumber.value); 
+let multiStats = {
+    playerOne: {wins: 0, losses: 0},
+    playerTwo: {wins: 0, losses: 0}
+}
 
-DOM.multiplayerBtn.addEventListener("click", function() {
-    DOM.enterNicknameDiv.classList.toggle("visible");
-})
 
-DOM.continueBtn.addEventListener('click', function(){
-    if(DOM.nicknameInput.value === "") {
-        DOM.nicknameMessage.style.opacity = "1";
-        DOM.nicknameMessage.innerHTML = "Please enter a nickname"
-    } else if(DOM.nicknameInput.value.length > 10) {
-        DOM.nicknameMessage.style.opacity = "1";
-        DOM.nicknameMessage.innerHTML = "Nickname must be shorter than 10 characters"
-    } else {
-        DOM.multiplayerScreen.style.display = "flex";
-        DOM.gameOptions.style.display = "none";
-        DOM.welcomeMessage.innerHTML = `Welcome ${DOM.nicknameInput.value}`
-    }
-    gameMode = "multiplayer"
-});
+document.addEventListener('keydown', multiplayerKeydown);
 
-DOM.backBtn.addEventListener("click", function(){
-    multiplayerScreen.style.display = "none";
-    gameOptions.style.display = "flex";
-});
-
-DOM.singlePlayerBtn.addEventListener('click', () => {
-    document.addEventListener('keydown', keydown);
-    SP.newSinglePlayerGame();
-    gameMode = "singlePlayer";
-});
-DOM.createGameBtn.addEventListener('click', () => {
-    document.addEventListener('keydown', keydown);
-    playerNumber = 1;
-    MP.newMultiplayerGame();
-    socket.emit('newMultiplayerGame', DOM.nicknameInput.value);
-});
-DOM.joinGameBtn.addEventListener('click', () => {
-    document.addEventListener('keydown', keydown);
-    playerNumber = 2;
-    MP.joinGame();
+if(DOM.playerNumber.value === "1") {
+    newMultiplayerGame();
+    socket.emit('newMultiplayerGame', DOM.nickname.value);
+} else if (DOM.playerNumber.value === "2") {
+    joinGame();
     const data = {
-        code: DOM.joinInput.value,
-        playerTwoName: DOM.nicknameInput.value
+        code: DOM.gameCode.value,
+        playerTwoName: DOM.nickname.value
     }
-    socket.emit('joinGame', JSON.stringify(data));
-});
+    socket.emit('joinGame', data);
+}
+
 DOM.startGameBtn.addEventListener('click', startGame); 
-
 DOM.playAgainBtn.addEventListener('click', startGame);
-
 
 function startGame() {
     DOM.startGameBtn.style.display = "none";
@@ -100,21 +63,21 @@ function startGame() {
         mode: gameMode,
         speed: parseInt(DOM.speedInput.value),
         gameType: DOM.currentGameType.innerHTML,
-        code: playerNumber === 1 ? DOM.yourGameCode.innerHTML.split(" ")[2] : DOM.joinInput.value,
+        code: DOM.yourGameCode.innerHTML.split(" ")[2],
         goal: parseInt(DOM.goalInput.value)
     }
     socket.emit('startGame', gameSettings);
 }
 
-function keydown(e) {
+function multiplayerKeydown(e) {
+    const data = {
+        keyCode: e.keyCode,
+        gameMode: gameMode
+    }
     switch(e.keyCode){
         case 37: case 39: case 38:  case 40: 
-         e.preventDefault(); 
-         const data = {
-             keyCode: e.keyCode,
-             gameMode: gameMode
-         }
-         socket.emit('keydown', data)
+            e.preventDefault(); 
+            socket.emit('keydown', data)
          break; 
          case 13: 
          if(DOM.messageInput === document.activeElement) {
@@ -124,149 +87,150 @@ function keydown(e) {
     }
 }
 
-// function handleCountdown() {
-//     const countdown = [3, 2, 1, 0];
-//     DOM.countdownDisplay.innerHTML = "";
-//     DOM.countdownDisplay.style.top = "50%",
-//     DOM.countdownDisplay.style.fontSize = "6.5rem"
-//     DOM.countdownDisplay.style.fontFamily = "'Bungee Shade', sans-serif"
-//     for(let number of countdown) {  
-//         setTimeout(() => {
-//             if(number === 0 ){
-//                 DOM.countdownDisplay.innerHTML = "";
-//             } else {
-//                 DOM.countdownDisplay.innerHTML = number
-//             }
-//         }, countdownTimer);
-//         countdownTimer += 1000;
-//     }
-// }
+function handlePlayerLeft(code) {
+    playerNumber = 1;
+    DOM.goalSetting.classList.remove("player-2-settings");
+    DOM.speedSetting.classList.remove("player-2-settings");
+    DOM.startGameBtn.style.display = "block";
+    DOM.gameTypeDropdown.style.display = "flex";
+    DOM.gameTypeHeader.style.display = "none";
+    DOM.yourGameCode.innerHTML = "Game code: " + code;
+    socket.emit('switchPlayerNumber')
+}
+
+
+
+
+function newMultiplayerGame() {
+    DOM.gameTypeHeader.style.display = "none";
+    G.init();
+    playerNumber = 1;
+}
+
+function joinGame() {
+    G.init();
+    playerNumber = 2;
+}
+
+function handleDisplayPlayerOne(name) {
+    DOM.player1.innerHTML = name;
+}
+
+function handleDisplayPlayerNames(data) {
+    DOM.player1.innerHTML = data.playerOne;
+    DOM.player2.innerHTML = data.playerTwo;
+    if(data.playerTwo === "Awaiting player..."){
+        DOM.player2.parentElement.style.backgroundColor = "#a7a7a7";
+    } else {
+        DOM.player2.parentElement.style.backgroundColor = "#B4DE3E";
+    }
+}
+
+function handleUpdatePlayerTwoSettings(settings) {
+    if(playerNumber === 2) {
+        DOM.goalInput.value = settings.goal;
+        DOM.speedInput.value = settings.speed;
+    }
+}
+
+function handleNotEnoughtPlayers(){
+    DOM.startGameBtn.style.display = "block";
+    DOM.playAgainBtn.style.display = "none";
+    DOM.gameMessage.innerHTML = "Not enough players"
+    setTimeout(() => {
+        DOM.gameMessage.innerHTML = ""
+    }, 2000);
+}
+
+function handleInit(number) {
+    playerNumber = number;
+    if(playerNumber === 1) {
+        DOM.goalSetting.classList.remove("player-2-settings");
+        DOM.speedSetting.classList.remove("player-2-settings");
+        DOM.startGameBtn.style.display = "block";
+        DOM.gameTypeDropdown.style.display = "flex";
+        DOM.gameTypeHeader.style.display = "none";
+    } else { 
+        DOM.goalSetting.classList.add("player-2-settings");
+        DOM.speedSetting.classList.add("player-2-settings");
+        DOM.startGameBtn.style.display = "none";
+        DOM.gameTypeDropdown.style.display = "none";
+        DOM.gameTypeHeader.style.display = "block";
+    }
+}
+
+function handleUpdateChosenGameType(gameType) {
+    DOM.currentGameType.innerHTML = gameType;
+}
+
+function handleUpdateMultiFoodCount(data) {
+    DOM.playerOneFoodCount.innerHTML = data.playerOne
+    DOM.playerTwoFoodCount.innerHTML = data.playerTwo
+}
+
+function handleUpdateMultiStats(winner) {
+
+    if(winner === 1) {
+        multiStats.playerOne.wins++ 
+        multiStats.playerTwo.losses++ 
+    } else {
+        multiStats.playerOne.losses++ 
+        multiStats.playerTwo.wins++ 
+    }
+    if(playerNumber === 1) {
+        DOM.wins.innerHTML = multiStats.playerOne.wins
+        DOM.losses.innerHTML = multiStats.playerOne.losses
+    }
+    if(playerNumber === 2) {
+        DOM.wins.innerHTML = multiStats.playerTwo.wins
+        DOM.losses.innerHTML = multiStats.playerTwo.losses
+    }
+} 
+
+function handleMultiplayerGameOver(winner) {
+    DOM.playAgainBtn.classList.remove("button-disabled");
+
+    if (winner === playerNumber) {
+        DOM.gameMessage.innerHTML = "You win!"
+    } else {
+        DOM.gameMessage.innerHTML = "You lose"
+    }
+}
+
+
+function handleGameCode(roomCode) {
+    DOM.yourGameCode.innerHTML = `Game code: ${roomCode}`
+}
+
+function handleUnknownCode() {
+    reset();
+}
+
+function handleTooManyPlayers() {
+    reset();
+    DOM.codeInputMessage.style.opacity = "1";
+    DOM.codeInputMessage.innerHTML = "Room is full"
+}
+
+function reset() {
+    playerNumber = null;
+    DOM.gameCode.value = '';
+}
 
 
 
 
 
 
-// single player functions /////////////////////////////////////////
 
-// function handleUpdateSingleFoodCount(data) {
-//     DOM.foodCount.innerHTML = data;
-// }
 
-// function handleSinglePlayerGameOver(score) {
-//     let highscoreValue = parseInt(DOM.highscore.innerHTML);
-//     if(score > highscoreValue) {
-//         DOM.highscore.innerHTML = score;
-//     }
-//     DOM.playAgainBtn.classList.remove("button-disabled");
-//     DOM.gameMessage.innerHTML = "Game<br>Over";
-//   }
-// multiplayer functions /////////////////////////////////////////
 
-// function handleDisplayPlayerOne(name) {
-//     DOM.player1.innerHTML = name;
-// }
-// function handleDisplayPlayerNames(data) {
-//     data = JSON.parse(data);
-//     DOM.player1.innerHTML = data.playerOne;
-//     DOM.player2.innerHTML = data.playerTwo;
-//     DOM.player2.parentElement.style.backgroundColor = "#B4DE3E";
-// }
 
-// function handleUpdatePlayerTwoSettings(settings) {
-//     if(playerNumber === 2) {
-//         DOM.goalInput.value = settings.goal;
-//         DOM.speedInput.value = settings.speed;
-//     }
-// }
 
-// function handleNotEnoughtPlayers(){
-//     DOM.startGameBtn.style.display = "block";
-//     DOM.playAgainBtn.style.display = "none";
-//     DOM.gameMessage.innerHTML = "Not enough players"
-//     setTimeout(() => {
-//         DOM.gameMessage.innerHTML = ""
-//     }, 2000);
-// }
 
-// function handleInit(number) {
-//     playerNumber = number;
-//     if(playerNumber === 2) {
-//         DOM.goalSetting.classList.add("player-2-settings")
-//         DOM.speedSetting.classList.add("player-2-settings")
 
-//     }
-//     DOM.gameScreen.style.display = "flex";
-//     DOM.multiplayerScreen.style.display = "none";
-// }
 
-// function handleUpdateChosenGameType(gameType) {
-//     DOM.currentGameType.innerHTML = gameType;
-// }
 
-// function handleUpdateMultiFoodCount(data) {
-//     DOM.playerOneFoodCount.innerHTML = data.playerOne
-//     DOM.playerTwoFoodCount.innerHTML = data.playerTwo
-// }
-
-// function handleUpdateMultiStats(winner) {
-
-//     if(winner === 1) {
-//         multiStats.playerOne.wins++ 
-//         multiStats.playerTwo.losses++ 
-//     } else {
-//         multiStats.playerOne.losses++ 
-//         multiStats.playerTwo.wins++ 
-//     }
-//     if(playerNumber === 1) {
-//         DOM.wins.innerHTML = multiStats.playerOne.wins
-//         DOM.losses.innerHTML = multiStats.playerOne.losses
-//     }
-//     if(playerNumber === 2) {
-//         DOM.wins.innerHTML = multiStats.playerTwo.wins
-//         DOM.losses.innerHTML = multiStats.playerTwo.losses
-//     }
-// } 
-
-// function handleMultiplayerGameOver(winner) {
-//     DOM.playAgainBtn.classList.remove("button-disabled");
-//     countdownTimer = 1000;
-
-//     if (winner === playerNumber) {
-//         DOM.gameMessage.innerHTML = "You win!"
-//     } else {
-//         DOM.gameMessage.innerHTML = "You lose"
-//     }
-// }
-
-// function handleGameCode(roomCode) {
-//     gameCode = roomCode;
-//     DOM.yourGameCode.innerHTML = `Game code: ${roomCode}`
-// }
-
-// function handleUnknownCode() {
-//     reset();
-//     DOM.codeInputMessage.style.opacity = "1";
-//     DOM.codeInputMessage.innerHTML = "Unknown game code"
-// }
-
-// function handleTooManyPlayers() {
-//     reset();
-//     DOM.codeInputMessage.style.opacity = "1";
-//     DOM.codeInputMessage.innerHTML = "Room is full"
-// }
-
-// function reset() {
-//     playerNumber = null;
-//     DOM.joinInput.value = '';
-//     DOM.gameScreen.style.display = "none";
-//     DOM.multiplayerScreen.style.display = "flex";
-// }
-
-// function handleReset() {
-//     DOM.gameMessage.innerHTML = "";
-//     countdownTimer = 1000;
-// }
 
 
 DOM.sendMessageBtn.addEventListener('click', sendMessage)
@@ -276,11 +240,10 @@ function sendMessage() {
         message: DOM.messageInput.value,
         author: playerNumber
     }
-    if(data.message === "") {return;}
-    socket.emit('sendMessage', data)
+    if(data.message === "") {return;};
+    socket.emit('sendMessage', data);
     DOM.messageInput.value = "";
 }
-
 
 function handlePostMessage(data) {
     const newMessage = document.createElement("div");
@@ -296,8 +259,12 @@ function handlePostMessage(data) {
 
     if(data.author === playerNumber){
         newMessage.classList.add("outgoing-message");
-    } else {
+    } 
+    if(data.author !== playerNumber && data.author !== "server") {
         newMessage.classList.add("incoming-message");
+    } 
+    if(data.author === "server") {
+        newMessage.classList.add("server-message");
     }
 }
 
@@ -321,7 +288,7 @@ DOM.gameTypeOptions.forEach(option => {
         option.classList.add("option-active") 
         DOM.currentGameType.innerHTML = option.innerHTML;
         const data = {
-            gameCode: gameCode,
+            gameCode: DOM.yourGameCode.innerHTML.split(" ")[2],
             gameType: option.innerHTML
         }
         socket.emit('chosenGameType', data)

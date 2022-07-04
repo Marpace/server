@@ -27,7 +27,6 @@ export function handleCountdown() {
 }
 
 export function handleGameState(gameState) {
-    gameState = JSON.parse(gameState);
     requestAnimationFrame(() => paintGame(gameState));
 }
 

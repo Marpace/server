@@ -1,0 +1,30 @@
+<%- include("partials/header") -%>
+<main>
+    <div id="game-screen">
+        <%- include('partials/single-player-settings') -%>
+        <div class="grid-container">
+            <h1 id="countdown"></h1>
+            <h1 id="game-message"></h1>
+            <canvas id="canvas"></canvas>
+            <div id="game-code-div">
+                <p id="your-game-code" class="text-info"></p>
+                <p class="text-info">controls: ← ↑ → ↓</p>
+            </div>
+        </div>
+        <div class="mobile-controls">
+            <button id="mobile-settings-trigger" class="lobby-btn">Settings</button>
+            <button id="mobile-chat-trigger" class="lobby-btn">Chat</button>
+            <div id="mobile-controls__up" class="mobile-controls__arrow up">▲</div>
+            <div id="mobile-controls__down" class="mobile-controls__arrow down">▼</div>
+            <div id="mobile-controls__left" class="mobile-controls__arrow left">◀</div>
+            <div id="mobile-controls__right" class="mobile-controls__arrow right">▶</div>
+        </div>
+        <button id="mobile-start-game-btn" class="lobby-btn">Start game</button>
+    </div>
+</main>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/gameplay/singlePlayer.js" type="module"></script>
+
+<%- include("partials/footer") -%>

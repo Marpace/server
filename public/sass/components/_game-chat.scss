@@ -15,8 +15,6 @@
             justify-content: flex-start;
             gap: 20px;
             padding: 10px;
-            // -ms-overflow-style: none; 
-            // scrollbar-width: none;
 
             &::-webkit-scrollbar {
                 width: 7px;
@@ -72,6 +70,12 @@
                     border-radius: 50%;
                     border-left: 5px solid #e7e7e7;
                 }
+            }
+            .server-message {
+                min-width: 90%;
+                margin: 10px 0;
+                background-color: $light_green;
+                text-align: center;
             }
         }
     }

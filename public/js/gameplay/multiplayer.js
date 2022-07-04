@@ -9,25 +9,12 @@ let multiStats = {
 
 
 export function newMultiplayerGame() {
-    DOM.gameChat.style.display = "flex";
-    DOM.lobbyScreen.style.display = "none";
-    DOM.gameStatsSinglePlayer.style.display = "none";
     DOM.gameTypeHeader.style.display = "none";
     G.init();
     playerNumber = 1;
 }
 
 export function joinGame() {
-    if(DOM.joinInput.value === "") {
-        DOM.codeInputMessage.style.opacity = "1";
-        DOM.codeInputMessage.innerHTML = "Please enter a game code";
-        return;
-    }
-    DOM.gameChat.style.display = "flex";
-    DOM.startGameBtn.style.display = "none";
-    DOM.gameTypeDropdown.style.display = "none";
-    DOM.gameTypeHeader.style.display = "block";
-    DOM.gameStatsSinglePlayer.style.display = "none";
     G.init();
     playerNumber = 2;
 }
@@ -37,7 +24,6 @@ export function handleDisplayPlayerOne(name) {
 }
 
 export function handleDisplayPlayerNames(data) {
-    data = JSON.parse(data);
     DOM.player1.innerHTML = data.playerOne;
     DOM.player2.innerHTML = data.playerTwo;
     DOM.player2.parentElement.style.backgroundColor = "#B4DE3E";
@@ -61,13 +47,19 @@ export function handleNotEnoughtPlayers(){
 
 export function handleInit(number) {
     playerNumber = number;
-    if(playerNumber === 2) {
-        DOM.goalSetting.classList.add("player-2-settings")
-        DOM.speedSetting.classList.add("player-2-settings")
-
+    if(playerNumber === 1) {
+        DOM.goalSetting.classList.remove("player-2-settings");
+        DOM.speedSetting.classList.remove("player-2-settings");
+        DOM.startGameBtn.style.display = "block";
+        DOM.gameTypeDropdown.style.display = "flex";
+        DOM.gameTypeHeader.style.display = "none";
+    } else { 
+        DOM.goalSetting.classList.add("player-2-settings");
+        DOM.speedSetting.classList.add("player-2-settings");
+        DOM.startGameBtn.style.display = "none";
+        DOM.gameTypeDropdown.style.display = "none";
+        DOM.gameTypeHeader.style.display = "block";
     }
-    DOM.gameScreen.style.display = "flex";
-    DOM.multiplayerScreen.style.display = "none";
 }
 
 export function handleUpdateChosenGameType(gameType) {
@@ -108,14 +100,13 @@ export function handleMultiplayerGameOver(winner) {
     }
 }
 
+
 export function handleGameCode(roomCode) {
     DOM.yourGameCode.innerHTML = `Game code: ${roomCode}`
 }
 
 export function handleUnknownCode() {
     reset();
-    DOM.codeInputMessage.style.opacity = "1";
-    DOM.codeInputMessage.innerHTML = "Unknown game code"
 }
 
 export function handleTooManyPlayers() {
@@ -126,7 +117,5 @@ export function handleTooManyPlayers() {
 
 function reset() {
     playerNumber = null;
-    DOM.joinInput.value = '';
-    DOM.gameScreen.style.display = "none";
-    DOM.multiplayerScreen.style.display = "flex";
+    DOM.gameCode.value = '';
 }
