@@ -10,23 +10,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Roboto+Condensed:wght@500&display=swap" rel="stylesheet">
 
-    
 
 </head>
 <body style="display: flex; justify-content: center; align-items: center">
-    <aside id="game-chat" class="game-aside">
-        <div id="chat">
-            <div id="sent-messages">
-                <div class="chat-message incoming-message"><p>sup</p></div>
-                <div class="chat-message incoming-message"><p>sup</p></div>
-                <div class="chat-message outgoing-message"><p>sup</p></div>
-            </div>
+    <div class="mobile-controls">
+        <div id="mobile-controls__up" class="mobile-controls__arrow up">
+            <img src="icons/triangle.png" alt="">
         </div>
-        <div id="send-message">
-            <input id="compose-message" type="text" placeholder="Send message...">
-            <button id="send-message-btn" class="lobby-btn">Send</button>
+        <div id="mobile-controls__down" class="mobile-controls__arrow down">
+            <img src="icons/triangle.png" style="transform: rotate(180deg);" alt="">
         </div>
-    </aside>
-    <script src="https://kit.fontawesome.com/da7d263600.js" crossorigin="anonymous"></script>
+        <div id="mobile-controls__left" class="mobile-controls__arrow left">
+            <img src="icons/triangle.png" style="transform: rotate(-90deg);" alt="">
+        </div>
+        <div id="mobile-controls__right" class="mobile-controls__arrow right">
+            <img src="icons/triangle.png" style="transform: rotate(90deg);" alt="">
+        </div>
+    </div>
 </body>
 </html>

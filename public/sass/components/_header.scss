@@ -5,7 +5,7 @@
     font-family: "Bungee Shade", sans-serif;
     text-align: center;
 
-    @include responsive($mobile) {
+    @include responsive($tablet_large) {
         font-size: 3.5rem;
         line-height: 1.5;
         margin-top: 20px;

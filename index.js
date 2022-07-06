@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const http = require('http');
-const { emit } = require('process');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {cors: {origin: "*"}});
@@ -206,6 +205,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnecting', () => {
     const code = socketRooms[socket.id];
+    if(!rooms[code]) return;
     const room = rooms[code];
     const playerOneName = room.playerOneName;
     const playerTwoName = room.playerTwoName;

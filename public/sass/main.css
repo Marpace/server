@@ -14,20 +14,6 @@ body {
   background-color: #231D02;
 }
 
-main {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-}
-@media only screen and (max-width: 415px) {
-  main {
-    justify-content: flex-start;
-  }
-}
-
 .hidden {
   display: none !important;
 }
@@ -58,6 +44,38 @@ main {
   color: #B4DE3E;
 }
 
+main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 30px 0 100px;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.show {
+  display: block !important;
+}
+
+.show-flex {
+  display: flex !important;
+}
+
+.invisible {
+  opacity: 0 !important;
+}
+
+.visible {
+  opacity: 1 !important;
+}
+
 .header {
   font-size: 4rem;
   color: #B4DE3E;
@@ -65,7 +83,7 @@ main {
   font-family: "Bungee Shade", sans-serif;
   text-align: center;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   .header {
     font-size: 3.5rem;
     line-height: 1.5;
@@ -118,16 +136,18 @@ main {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: space-between;
-  height: 600px;
+  gap: 30px;
+  height: fit-content;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   .game-aside {
-    position: absolute;
+    position: fixed;
+    top: 0;
     left: -110%;
     z-index: 1000;
     transition: 0.5s ease-in-out;
     width: 100%;
+    height: 100vh;
   }
 }
 .game-aside .game-info {
@@ -144,10 +164,10 @@ main {
   justify-content: flex-start;
   gap: 25px;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   .game-aside .game-info {
     width: 100%;
-    height: 545px;
+    height: 100%;
     position: relative;
   }
 }
@@ -184,7 +204,7 @@ main {
 .game-aside .game-info__section .section__item input[type=number]::-webkit-outer-spin-button {
   opacity: 1;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   .game-aside .game-info__section .section__item input[type=number]::-webkit-inner-spin-button,
 .game-aside .game-info__section .section__item input[type=number]::-webkit-outer-spin-button {
     opacity: 0;
@@ -194,6 +214,7 @@ main {
   background: none;
   border: none;
   text-align: right;
+  pointer-events: none;
 }
 .game-aside .game-info__section .player-2-settings input::-webkit-outer-spin-button, .game-aside .game-info__section .player-2-settings input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -216,7 +237,7 @@ main {
   right: 12px;
   font-size: 1.6rem;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   .game-aside .game-info #game-type #game-type-dropdown #dropdown-arrow-down {
     display: none;
   }
@@ -227,7 +248,7 @@ main {
   background-color: #151201;
   width: 100%;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   .game-aside .game-info #game-type #game-type-dropdown__content {
     display: flex;
     flex-direction: column;
@@ -262,12 +283,12 @@ main {
 .game-aside .game-info #game-type #game-type-dropdown:hover #game-type-dropdown__content {
   display: block;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   .game-aside .game-info #game-type #game-type-dropdown:hover #game-type-dropdown__content {
     display: flex;
   }
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   .game-aside .game-info #game-type .current-game-type {
     display: none;
   }
@@ -275,7 +296,7 @@ main {
 .game-aside .game-info .back-arrow {
   display: none;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   .game-aside .game-info .back-arrow {
     display: block;
     position: absolute;
@@ -286,7 +307,7 @@ main {
     padding: 10px;
   }
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   .game-aside #game-aside__buttons #start-game-btn {
     display: none;
   }
@@ -399,7 +420,7 @@ main {
 .mobile-controls {
   display: none;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   .mobile-controls {
     display: block;
     height: 160px;
@@ -437,20 +458,6 @@ main {
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-  }
-  .mobile-controls #mobile-settings-trigger,
-.mobile-controls #mobile-chat-trigger {
-    top: -10px;
-    position: absolute;
-    min-width: 70px;
-    font-size: 0.7rem;
-    padding: 0 5px;
-  }
-  .mobile-controls #mobile-settings-trigger {
-    left: -50%;
-  }
-  .mobile-controls #mobile-chat-trigger {
-    right: -50%;
   }
 }
 
@@ -540,23 +547,22 @@ main {
   align-items: flex-start;
   gap: 30px;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   #game-screen {
     flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
     position: relative;
+    width: 90%;
+    min-height: 100vh;
   }
 }
 #game-screen .grid-container {
-  height: 650px;
-  width: 600px;
   position: relative;
   margin-bottom: 50px;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   #game-screen .grid-container {
-    height: 340px;
-    width: 340px;
     margin-bottom: 0;
   }
 }
@@ -579,12 +585,38 @@ main {
   display: flex;
   justify-content: space-between;
 }
+@media only screen and (max-width: 992px) {
+  #game-screen #game-code-div {
+    display: none;
+  }
+}
 #game-screen #mobile-start-game-btn {
   display: none;
 }
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 992px) {
   #game-screen #mobile-start-game-btn {
     display: block;
     width: 100%;
+  }
+}
+#game-screen #mobile-play-again-btn {
+  display: none;
+  width: 100%;
+}
+#game-screen #mobile-settings-trigger {
+  display: none;
+}
+@media only screen and (max-width: 992px) {
+  #game-screen #mobile-settings-trigger {
+    display: block;
+    width: 100%;
+  }
+}
+#game-screen #mobile-chat-trigger {
+  display: none;
+}
+@media only screen and (max-width: 992px) {
+  #game-screen #mobile-chat-trigger {
+    display: block;
   }
 }

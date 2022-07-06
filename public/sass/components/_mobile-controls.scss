@@ -1,6 +1,6 @@
 .mobile-controls {
     display: none;
-    @include responsive($mobile) {
+    @include responsive($tablet_large) {
         display: block;
         height: 160px;
         width: 50%;
@@ -34,21 +34,6 @@
             right: 0;
             top: 50%;
             transform: translateY(-50%);
-        }
-
-        #mobile-settings-trigger,
-        #mobile-chat-trigger {
-            top: -10px;
-            position: absolute;
-            min-width: 70px;
-            font-size: .7rem;
-            padding: 0 5px;
-        }
-        #mobile-settings-trigger {
-            left: -50%;
-        }
-        #mobile-chat-trigger {
-            right: -50%;
         }
     }
 }

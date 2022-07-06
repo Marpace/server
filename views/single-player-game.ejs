@@ -11,15 +11,13 @@
                 <p class="text-info">controls: ← ↑ → ↓</p>
             </div>
         </div>
-        <div class="mobile-controls">
-            <button id="mobile-settings-trigger" class="lobby-btn">Settings</button>
-            <button id="mobile-chat-trigger" class="lobby-btn">Chat</button>
-            <div id="mobile-controls__up" class="mobile-controls__arrow up">▲</div>
-            <div id="mobile-controls__down" class="mobile-controls__arrow down">▼</div>
-            <div id="mobile-controls__left" class="mobile-controls__arrow left">◀</div>
-            <div id="mobile-controls__right" class="mobile-controls__arrow right">▶</div>
-        </div>
+        <%- include('partials/mobile-controls') -%>
+
+        <!-- Only visible on portrait  -->
         <button id="mobile-start-game-btn" class="lobby-btn">Start game</button>
+        <button id="mobile-play-again-btn" class="lobby-btn">Play again</button>
+        <button id="mobile-settings-trigger" class="lobby-btn">Settings</button>
+
     </div>
 </main>
 

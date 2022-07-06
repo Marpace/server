@@ -3,23 +3,28 @@
     align-items: flex-start;
     gap: 30px;
     // display: none;
-    @include responsive($mobile) {
+    @include responsive($tablet_large) {
         flex-direction: column;
+        justify-content: flex-start;
         align-items: center;
         position: relative;
+        width: 90%;
+        min-height: 100vh;
     }
 
     .grid-container {
-        height: 650px;
-        width: 600px;
+        // height: 650px;
+        // width: 600px;
         position: relative;
         margin-bottom: 50px;
-        @include responsive($mobile) {
-            height: 340px;
-            width: 340px;
+        @include responsive($tablet_large) {
             margin-bottom: 0;
         }
 
+        // #canvas {
+        //     height: 700px;
+        //     width: 700px;
+        // }
         #game-message, #countdown {
             position: absolute;
             top: 50%;
@@ -39,12 +44,44 @@
         width: 600px;
         display: flex;
         justify-content: space-between;
+        @include responsive($tablet_large) {
+            display: none;
+        }
     }
     #mobile-start-game-btn {
         display: none;
-        @include responsive($mobile) {
+        @include responsive($tablet_large) {
             display: block;
             width: 100%;
         }
     }
+    #mobile-play-again-btn {
+        display: none;
+        width: 100%;
+    }
+    #mobile-settings-trigger {
+        display: none;
+        @include responsive($tablet_large) {
+            display: block;
+            width: 100%;
+        }
+    }
+    #mobile-chat-trigger {
+        display: none;
+        @include responsive($tablet_large) {
+            display: block;
+        }
+    }
+    
+    // #mobile-settings-trigger,
+    // #mobile-chat-trigger {
+    //     top: -10px;
+    //     position: absolute;
+    //     min-width: 70px;
+    //     font-size: .7rem;
+    //     padding: 0 5px;
+    // }
+    // #mobile-chat-trigger {
+    //     right: 5%;
+    // }
 }

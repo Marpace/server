@@ -40,16 +40,14 @@ export function handleUpdateAllYouCanEatTimer(seconds) {
 export function init() {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
-    if(window.screen.width < 416 ) {
-        canvas.width = canvas.height = 340;
+    if(window.screen.width < window.screen.height){
+        canvas.width = canvas.height = (window.screen.width / 100 ) * 90;
     } else {
-        canvas.width = canvas.height = 600;
+        canvas.width = canvas.height = (window.screen.height / 100) * 70;
     }
     ctx.fillStyle = GRID_COLOUR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
-
-
 
 function paintGame(state) {
 
@@ -87,4 +85,3 @@ function paintPlayer(playerState, size, colour) {
         ctx.fillRect(cell.x * size, cell.y * size, size, size);
     }
 }
-

@@ -55,6 +55,7 @@ export const gameTypeOptions = qsa(".game-type__option")
 export const currentGameType = qs(".current-game-type")
 export const gameTypeDropdown = qs("#game-type-dropdown")
 export const gameTypeHeader = qs("#game-type-header")
+export const gamesPlayed = qs("#games-played")
 
 
 //game chat 
@@ -62,3 +63,12 @@ export const gameChat = qs("#game-chat");
 export const messageInput = qs("#compose-message");
 export const sendMessageBtn = qs("#send-message-btn");
 export const sentMessagesContainer = qs("#sent-messages");
+
+// mobile 
+export const mobileSettingsBtn = qs("#mobile-settings-trigger");
+export const mobileChatBtn = qs("#mobile-chat-trigger");
+export const gameAside = qs(".game-aside");
+export const backArrow = qs(".back-arrow");
+export const mobileControlArrows = Array.from(qsa(".mobile-controls__arrow"));
+export const mobileStartGameBtn = qs("#mobile-start-game-btn");
+export const mobilePlayAgainBtn = qs("#mobile-play-again-btn");

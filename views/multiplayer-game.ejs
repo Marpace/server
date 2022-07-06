@@ -17,20 +17,18 @@
             </div>
         </div>
         <%- include('partials/game-chat') -%>
-        <div class="mobile-controls">
-            <button id="mobile-settings-trigger" class="lobby-btn">Settings</button>
-            <button id="mobile-chat-trigger" class="lobby-btn">Chat</button>
-            <div id="mobile-controls__up" class="mobile-controls__arrow up">▲</div>
-            <div id="mobile-controls__down" class="mobile-controls__arrow down">▼</div>
-            <div id="mobile-controls__left" class="mobile-controls__arrow left">◀</div>
-            <div id="mobile-controls__right" class="mobile-controls__arrow right">▶</div>
-        </div>
+        <%- include('partials/mobile-controls') -%>
+        
+        <!-- Only visible on portrait -->
+        <button id="mobile-settings-trigger" class="lobby-btn">Settings</button>
+        <button id="mobile-chat-trigger" class="lobby-btn">Chat</button>
         <button id="mobile-start-game-btn" class="lobby-btn">Start game</button>
+
     </div>
 </main>
 
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/main.js" type="module"></script>
+<script src="/js/gameplay/multiplayer.js" type="module"></script>
 
 <%- include("partials/footer") -%>

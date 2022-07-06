@@ -6,6 +6,10 @@ let FRAME_RATE;
 let singlePlayerState;
 let singlePlayerFoodCount = 0;
 let allYouCanEatSeconds = 60;
+let isTurning = false;
+let gamesPlayed = 0;
+let mobile = window.screen.width < 992 ? true : false
+
 
     G.init();
 
@@ -54,21 +58,31 @@ let allYouCanEatSeconds = 60;
         } else {
             FRAME_RATE = speed + 6;
         }
-        DOM.startGameBtn.style.display = "none";
-        DOM.playAgainBtn.classList.add("button-disabled");
-        DOM.playAgainBtn.style.display = "block";
-        DOM.foodCount.innerHTML = singlePlayerFoodCount;
-        document.addEventListener('keydown', singlePlayerKeydown);
+        if(window.screen.width > window.screen.height) {
+            // for desktop or landscape screens
+            DOM.startGameBtn.style.display = "none";
+            DOM.playAgainBtn.classList.add("button-disabled");
+            DOM.playAgainBtn.style.display = "block";
+            DOM.foodCount.innerHTML = singlePlayerFoodCount;
+            document.addEventListener('keydown', singlePlayerKeydown);
+        } else {
+            // for mobile or portrait screens
+            DOM.gameAside.style.left = "-110%"
+            DOM.mobileStartGameBtn.style.display = "none";
+        }
         singlePlayerState = createSinglePlayerState(gameType);
         G.handleCountdown();
     }
 
     function singlePlayerKeydown(e) {
+        if(isTurning) return;
+        isTurning = true;
         switch(e.keyCode){
             case 37: case 39: case 38:  case 40: 
                 e.preventDefault(); 
                 const vel = getSinglePlayerUpdatedVelocity(e.keyCode, singlePlayerState);
-                if(vel) singlePlayerState.player.vel = vel;
+                if(vel !== undefined) singlePlayerState.player.vel = vel;
+                isTurning = false;
             break; 
             default: break; 
         }
@@ -86,6 +100,8 @@ let allYouCanEatSeconds = 60;
             }
             startSinglePlayerGameTimeout(state);
         } else {
+            gamesPlayed++
+            DOM.gamesPlayed.innerHTML = gamesPlayed;
             handleSinglePlayerGameOver(singlePlayerFoodCount)
             singlePlayerFoodCount = 0;
         }
@@ -100,6 +116,8 @@ let allYouCanEatSeconds = 60;
             allYouCanEatSeconds--
             if(allYouCanEatSeconds < 0 ){
                 clearInterval(timerIntervalId)
+                gamesPlayed++
+                DOM.gamesPlayed.innerHTML = gamesPlayed;
                 handleSinglePlayerGameOver(singlePlayerFoodCount);
                 clearInterval(gameIntervalId);
                 singlePlayerFoodCount = 0;
@@ -120,6 +138,8 @@ let allYouCanEatSeconds = 60;
             }
         } else if(result.winner) {
             if(state.gameType === "All you can eat") clearInterval(timerIntervalId);
+            gamesPlayed++
+            DOM.gamesPlayed.innerHTML = gamesPlayed;
             handleSinglePlayerGameOver(singlePlayerFoodCount);
             clearInterval(gameIntervalId);
             singlePlayerFoodCount = 0;
@@ -134,9 +154,48 @@ let allYouCanEatSeconds = 60;
             DOM.highscore.innerHTML = score;
         }
         DOM.playAgainBtn.classList.remove("button-disabled");
+        if(mobile) DOM.mobileStartGameBtn.style.display = "block";
         DOM.gameMessage.innerHTML = "Game<br>Over";
-    }
+    };
 
+    //Mobile //////////////////////////////////////////////////////////
+
+    DOM.mobileStartGameBtn.addEventListener('click', () => {
+        DOM.mobileStartGameBtn.innerHTML = "Play again";
+        const gameType = DOM.currentGameType.innerHTML;
+        const speed = parseInt(DOM.speedInput.value);
+        handleStartGame(gameType, speed);
+    });
+
+    DOM.mobileSettingsBtn.addEventListener('click', () => {
+        DOM.gameAside.style.left = "50%";
+        DOM.gameAside.style.transform = "translateX(-50%)"
+    });
+
+    DOM.backArrow.addEventListener('click', () => {
+        DOM.gameAside.style.left = "-110%"
+    });
+
+    DOM.mobileControlArrows.forEach(arrow => {
+        arrow.addEventListener('click', () => {
+            let vel;
+            if(arrow.classList.contains("up")){
+                vel = getSinglePlayerUpdatedVelocity(38, singlePlayerState);
+            }
+            if(arrow.classList.contains("down")){
+                vel = getSinglePlayerUpdatedVelocity(40, singlePlayerState);
+            }
+            if(arrow.classList.contains("left")){
+                vel = getSinglePlayerUpdatedVelocity(37, singlePlayerState);
+            }
+            if(arrow.classList.contains("right")){
+                vel = getSinglePlayerUpdatedVelocity(39, singlePlayerState);
+            }
+            singlePlayerState.player.vel = vel;
+        });
+    });
+
+    //game functionality
     function createSinglePlayerState(gameType) {
         const player = {
             pos: {
@@ -332,9 +391,10 @@ let allYouCanEatSeconds = 60;
             }
         }
     }
-
+    
     function generateFoodPieces(amount) {
         const pieces = [];
+        checkTurning();
         for(let i=0; i < amount; i++) {
             pieces.push({
                 x: Math.floor(Math.random() * GRID_SIZE),
@@ -343,3 +403,4 @@ let allYouCanEatSeconds = 60;
         }
         return pieces;
     }
+
