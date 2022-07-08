@@ -7,6 +7,7 @@
 
 html, body {
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -51,9 +52,15 @@ main {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  margin: 30px 0 100px;
+  padding: 30px 0 100px;
   width: 100%;
   min-height: 100vh;
+}
+@media only screen and (max-width: 992px) {
+  main {
+    justify-content: flex-start;
+    gap: 60px;
+  }
 }
 
 .hidden {
@@ -103,6 +110,7 @@ main {
   text-align: center;
   text-decoration: none;
   transition: 0.2s;
+  max-width: 450px;
 }
 .lobby-btn:hover {
   color: #B4DE3E;
@@ -176,6 +184,7 @@ main {
 }
 .game-aside .game-info__section {
   width: 100%;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -231,11 +240,22 @@ main {
   position: relative;
   cursor: pointer;
 }
+@media only screen and (max-width: 992px) {
+  .game-aside .game-info #game-type #game-type-dropdown {
+    text-align: center;
+  }
+}
+.game-aside .game-info #game-type #game-type-dropdown:hover #game-type-dropdown__content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 .game-aside .game-info #game-type #game-type-dropdown #dropdown-arrow-down {
   position: absolute;
   top: -2px;
   right: 12px;
   font-size: 1.6rem;
+  color: #B4DE3E;
 }
 @media only screen and (max-width: 992px) {
   .game-aside .game-info #game-type #game-type-dropdown #dropdown-arrow-down {
@@ -256,11 +276,16 @@ main {
     align-items: center;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 20px;
+    margin-top: 30px;
   }
 }
-.game-aside .game-info #game-type #game-type-dropdown__content p:hover {
+.game-aside .game-info #game-type #game-type-dropdown__content .game-type__option {
+  color: #B4DE3E;
+  font-weight: 400;
+  font-size: 1.2rem;
+}
+.game-aside .game-info #game-type #game-type-dropdown__content .game-type__option:hover {
   background: #B4DE3E;
   color: #151201;
 }
@@ -280,13 +305,11 @@ main {
     color: #151201;
   }
 }
-.game-aside .game-info #game-type #game-type-dropdown:hover #game-type-dropdown__content {
-  display: block;
-}
-@media only screen and (max-width: 992px) {
-  .game-aside .game-info #game-type #game-type-dropdown:hover #game-type-dropdown__content {
-    display: flex;
-  }
+.game-aside .game-info #game-type .current-game-type {
+  width: 100%;
+  background-color: #B4DE3E;
+  padding: 5px 10px;
+  text-align: center;
 }
 @media only screen and (max-width: 992px) {
   .game-aside .game-info #game-type .current-game-type {
@@ -300,7 +323,7 @@ main {
   .game-aside .game-info .back-arrow {
     display: block;
     position: absolute;
-    bottom: 20px;
+    bottom: 35px;
     right: 20px;
     font-size: 2rem;
     color: #B4DE3E;
@@ -319,10 +342,33 @@ main {
 #game-chat {
   width: 250px;
 }
+@media only screen and (max-width: 992px) {
+  #game-chat {
+    position: fixed;
+    top: 0;
+    left: 110%;
+    z-index: 1000;
+    transition: 0.5s ease-in-out;
+    width: 100%;
+    height: 100vh;
+    background-color: #151201;
+    justify-content: space-between;
+    padding-bottom: 30px;
+    flex-wrap: nowrap;
+    gap: 0px;
+  }
+}
 #game-chat #chat {
   width: 100%;
   height: 480px;
   background-color: #151201;
+  position: relative;
+  padding: 50px 0 30px;
+}
+@media only screen and (max-width: 992px) {
+  #game-chat #chat {
+    height: calc(100vh - 70px);
+  }
 }
 #game-chat #chat #sent-messages {
   height: 100%;
@@ -395,6 +441,20 @@ main {
   background-color: #B4DE3E;
   text-align: center;
 }
+#game-chat #chat .close-chat {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: #B4DE3E;
+  font-size: 1.2rem;
+}
+#game-chat #chat .typing {
+  width: 100%;
+  color: #B4DE3E;
+  position: absolute;
+  bottom: 5px;
+  text-align: center;
+}
 #game-chat #send-message {
   display: flex;
   flex-direction: column;
@@ -404,6 +464,11 @@ main {
   gap: 10px;
   width: 100%;
 }
+@media only screen and (max-width: 992px) {
+  #game-chat #send-message {
+    flex-direction: row;
+  }
+}
 #game-chat #send-message #compose-message {
   height: 40px;
   width: 100%;
@@ -412,9 +477,30 @@ main {
   padding: 0 10px;
   font-weight: 400;
 }
+@media only screen and (max-width: 992px) {
+  #game-chat #send-message #compose-message {
+    width: 80%;
+  }
+}
 #game-chat #send-message #send-message-btn {
   width: 100%;
   padding: 2px;
+}
+@media only screen and (max-width: 992px) {
+  #game-chat #send-message #send-message-btn {
+    display: none;
+  }
+}
+#game-chat #send-message #mobile-send-message-btn {
+  height: 40px;
+  width: 40px;
+  background-color: #B4DE3E;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .mobile-controls {
@@ -424,7 +510,7 @@ main {
   .mobile-controls {
     display: block;
     height: 160px;
-    width: 50%;
+    width: 90%;
     position: relative;
   }
   .mobile-controls__arrow {
@@ -437,7 +523,14 @@ main {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    color: #B4DE3E;
+  }
+  .mobile-controls .up, .mobile-controls .down {
+    width: calc(100% - 140px);
+    height: 50%;
+  }
+  .mobile-controls .left, .mobile-controls .right {
+    height: 100%;
+    width: 70px;
   }
   .mobile-controls #mobile-controls__up {
     top: 0;
@@ -566,6 +659,17 @@ main {
     margin-bottom: 0;
   }
 }
+#game-screen .grid-container #canvas {
+  width: 85vh;
+  max-width: 600px;
+  aspect-ratio: 1/1;
+}
+@media only screen and (max-width: 992px) {
+  #game-screen .grid-container #canvas {
+    width: 90vw;
+    max-width: 700px;
+  }
+}
 #game-screen .grid-container #game-message, #game-screen .grid-container #countdown {
   position: absolute;
   top: 50%;
@@ -580,13 +684,68 @@ main {
 #game-screen .grid-container #game-message {
   font-size: 4rem;
 }
-#game-screen #game-code-div {
-  width: 600px;
+@media only screen and (max-width: 992px) {
+  #game-screen .grid-container #game-message {
+    font-size: 3rem;
+  }
+}
+#game-screen .grid-container #game-code-div {
+  width: 100%;
+  padding: 20px 10px;
   display: flex;
   justify-content: space-between;
 }
+#game-screen .grid-container #game-code-div .settings-icon, #game-screen .grid-container #game-code-div .chat-icon {
+  display: none;
+}
 @media only screen and (max-width: 992px) {
-  #game-screen #game-code-div {
+  #game-screen .grid-container #game-code-div .settings-icon, #game-screen .grid-container #game-code-div .chat-icon {
+    display: block;
+  }
+}
+#game-screen .grid-container #game-code-div .settings-icon {
+  height: 20px;
+  width: 20px;
+  background-color: #B4DE3E;
+  position: relative;
+}
+#game-screen .grid-container #game-code-div .settings-icon::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: -1px;
+  height: 7px;
+  width: 22px;
+  background-color: #231D02;
+}
+#game-screen .grid-container #game-code-div .settings-icon::after {
+  content: "";
+  position: absolute;
+  top: 11px;
+  left: -1px;
+  height: 7px;
+  width: 22px;
+  background-color: #231D02;
+}
+#game-screen .grid-container #game-code-div .chat-icon {
+  width: 20px;
+  height: 15px;
+  border-radius: 5px;
+  background-color: #B4DE3E;
+  position: relative;
+}
+#game-screen .grid-container #game-code-div .chat-icon:after {
+  content: "";
+  position: absolute;
+  left: 60%;
+  bottom: -3px;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  border-left: 5px solid #B4DE3E;
+}
+@media only screen and (max-width: 992px) {
+  #game-screen .grid-container #game-code-div .controls-info {
     display: none;
   }
 }

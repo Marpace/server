@@ -13,18 +13,21 @@
     }
 
     .grid-container {
-        // height: 650px;
-        // width: 600px;
         position: relative;
         margin-bottom: 50px;
         @include responsive($tablet_large) {
             margin-bottom: 0;
         }
+        #canvas {
+            width: 85vh;
+            max-width: 600px;
+            aspect-ratio: 1/1;
+            @include responsive($tablet_large) {
+                width: 90vw;
+                max-width: 700px;
+            }
+        }
 
-        // #canvas {
-        //     height: 700px;
-        //     width: 700px;
-        // }
         #game-message, #countdown {
             position: absolute;
             top: 50%;
@@ -38,14 +41,71 @@
         }
         #game-message {
             font-size: 4rem;
+            @include responsive($tablet_large) {
+                font-size: 3rem;
+            }
         }
-    }
-    #game-code-div {
-        width: 600px;
-        display: flex;
-        justify-content: space-between;
-        @include responsive($tablet_large) {
-            display: none;
+        #game-code-div {
+            width: 100%;
+            padding: 20px 10px;
+            display: flex;
+            justify-content: space-between;
+
+            .settings-icon, .chat-icon {
+                display: none;
+                @include responsive($tablet_large) {
+                    display: block;
+                }
+            }
+
+            .settings-icon {
+                height: 20px;
+                width: 20px;
+                background-color: $light_green;
+                position: relative;
+
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: 2px;
+                    left: -1px;
+                    height: 7px;
+                    width: 22px;
+                    background-color: $dark_green;
+                }
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: 11px;
+                    left: -1px;
+                    height: 7px;
+                    width: 22px;
+                    background-color: $dark_green;
+                }
+            }
+            .chat-icon {
+                width: 20px;
+                height: 15px;
+                border-radius: 5px;
+                background-color: $light_green;
+                position: relative;
+
+                &:after {
+                    content: "";
+                    position: absolute;
+                    left: 60%;
+                    bottom: -3px;
+                    height: 15px;
+                    width: 15px;
+                    border-radius: 50%;
+                    border-left: 5px solid $light_green;
+                }
+            }
+            .controls-info {
+                @include responsive($tablet_large) {
+                    display: none;
+                }
+            }
         }
     }
     #mobile-start-game-btn {

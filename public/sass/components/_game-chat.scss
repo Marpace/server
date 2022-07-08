@@ -1,10 +1,29 @@
 #game-chat{
     width: 250px;
+    @include responsive($tablet_large) {
+        position: fixed;
+        top: 0;
+        left: 110%;
+        z-index: 1000;
+        transition: .5s ease-in-out;
+        width: 100%;
+        height: 100vh;
+        background-color: $very_dark_green;
+        justify-content: space-between;
+        padding-bottom: 30px;
+        flex-wrap: nowrap;
+        gap: 0px;
+    } 
 
     #chat {
         width: 100%;
         height: 480px;
         background-color: $very_dark_green;
+        position: relative;
+        padding: 50px 0 30px;
+        @include responsive($tablet_large) {
+            height: calc(100vh - 70px);
+        }
         
         #sent-messages {
             height: 100%;
@@ -29,7 +48,6 @@
                 -webkit-box-shadow: inset 0 0 6px rgba(177, 177, 177, 0.5);
                 box-shadow: inset 0 0 6px rgba(177, 177, 177, 0.5); 
             }
-
             .chat-message {
                 width: fit-content;
                 max-width: 80%;
@@ -78,11 +96,29 @@
                 text-align: center;
             }
         }
+        .close-chat {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: $light_green;
+            font-size: 1.2rem;
+
+        }
+        .typing {
+            width: 100%;
+            color: $light_green;
+            position: absolute;
+            bottom: 5px;
+            text-align: center;
+        }
     }
     #send-message {
         @include flex_centered(column);
         gap: 10px;
         width: 100%;
+        @include responsive($tablet_large) {
+            flex-direction: row;
+        }
 
         #compose-message {
             height: 40px;
@@ -91,10 +127,23 @@
             background-color: #e7e7e7;
             padding: 0 10px;
             font-weight: 400;
+            @include responsive($tablet_large) {
+                width: 80%;
+            }
         }
         #send-message-btn {
             width: 100%;
             padding: 2px;
+            @include responsive($tablet_large) {
+               display: none;
+            }
+        }
+        #mobile-send-message-btn {
+            height: 40px;
+            width: 40px;
+            background-color: $light_green;
+            border: none;
+            @include flex_centered(row);
         }
 
     }

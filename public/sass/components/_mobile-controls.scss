@@ -3,7 +3,7 @@
     @include responsive($tablet_large) {
         display: block;
         height: 160px;
-        width: 50%;
+        width: 90%;
         position: relative;
     
     
@@ -13,8 +13,15 @@
             border: 2px solid $light_green;
             position: absolute;
             @include flex_centered(row);
-            color: $light_green;
         }   
+        .up, .down {
+            width: calc(100% - 140px);
+            height: 50%;
+        }
+        .left, .right {
+            height: 100%;
+            width: 70px;
+        }
         #mobile-controls__up {
             top: 0;
             left: 50%;

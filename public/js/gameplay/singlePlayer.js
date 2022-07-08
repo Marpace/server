@@ -8,11 +8,10 @@ let singlePlayerFoodCount = 0;
 let allYouCanEatSeconds = 60;
 let isTurning = false;
 let gamesPlayed = 0;
-let mobile = window.screen.width < 992 ? true : false
+let mobile = window.screen.width < 993 ? true : false
 
 
     G.init();
-
     DOM.startGameBtn.addEventListener('click', () => {
         const gameType = DOM.currentGameType.innerHTML;
         const speed = parseInt(DOM.speedInput.value);
@@ -58,20 +57,20 @@ let mobile = window.screen.width < 992 ? true : false
         } else {
             FRAME_RATE = speed + 6;
         }
-        if(window.screen.width > window.screen.height) {
-            // for desktop or landscape screens
+        if(!mobile) {
             DOM.startGameBtn.style.display = "none";
             DOM.playAgainBtn.classList.add("button-disabled");
             DOM.playAgainBtn.style.display = "block";
             DOM.foodCount.innerHTML = singlePlayerFoodCount;
             document.addEventListener('keydown', singlePlayerKeydown);
         } else {
-            // for mobile or portrait screens
             DOM.gameAside.style.left = "-110%"
             DOM.mobileStartGameBtn.style.display = "none";
+            DOM.mobileSettingsBtn.style.display = "none";
+            DOM.countdownDisplay.style.fontSize = "4rem";
         }
         singlePlayerState = createSinglePlayerState(gameType);
-        G.handleCountdown();
+        G.handleCountdown(mobile);
     }
 
     function singlePlayerKeydown(e) {
@@ -154,46 +153,52 @@ let mobile = window.screen.width < 992 ? true : false
             DOM.highscore.innerHTML = score;
         }
         DOM.playAgainBtn.classList.remove("button-disabled");
-        if(mobile) DOM.mobileStartGameBtn.style.display = "block";
+        if(mobile) {
+            DOM.mobileStartGameBtn.style.display = "block";
+            DOM.mobileSettingsBtn.style.display = "block";
+        } 
+
         DOM.gameMessage.innerHTML = "Game<br>Over";
     };
 
     //Mobile //////////////////////////////////////////////////////////
 
-    DOM.mobileStartGameBtn.addEventListener('click', () => {
-        DOM.mobileStartGameBtn.innerHTML = "Play again";
-        const gameType = DOM.currentGameType.innerHTML;
-        const speed = parseInt(DOM.speedInput.value);
-        handleStartGame(gameType, speed);
-    });
-
-    DOM.mobileSettingsBtn.addEventListener('click', () => {
-        DOM.gameAside.style.left = "50%";
-        DOM.gameAside.style.transform = "translateX(-50%)"
-    });
-
-    DOM.backArrow.addEventListener('click', () => {
-        DOM.gameAside.style.left = "-110%"
-    });
-
-    DOM.mobileControlArrows.forEach(arrow => {
-        arrow.addEventListener('click', () => {
-            let vel;
-            if(arrow.classList.contains("up")){
-                vel = getSinglePlayerUpdatedVelocity(38, singlePlayerState);
-            }
-            if(arrow.classList.contains("down")){
-                vel = getSinglePlayerUpdatedVelocity(40, singlePlayerState);
-            }
-            if(arrow.classList.contains("left")){
-                vel = getSinglePlayerUpdatedVelocity(37, singlePlayerState);
-            }
-            if(arrow.classList.contains("right")){
-                vel = getSinglePlayerUpdatedVelocity(39, singlePlayerState);
-            }
-            singlePlayerState.player.vel = vel;
+    if(mobile) {
+        DOM.mobileStartGameBtn.addEventListener('click', () => {
+            DOM.mobileStartGameBtn.innerHTML = "Play again";
+            const gameType = DOM.currentGameType.innerHTML;
+            const speed = parseInt(DOM.speedInput.value);
+            handleStartGame(gameType, speed);
         });
-    });
+    
+        DOM.mobileSettingsBtn.addEventListener('click', () => {
+            DOM.gameAside.style.left = "50%";
+            DOM.gameAside.style.transform = "translateX(-50%)"
+        });
+    
+        DOM.backArrow.addEventListener('click', () => {
+            DOM.gameAside.style.left = "-110%"
+        });
+    
+        DOM.mobileControlArrows.forEach(arrow => {
+            arrow.addEventListener('click', () => {
+                let vel;
+                if(arrow.classList.contains("up")){
+                    vel = getSinglePlayerUpdatedVelocity(38, singlePlayerState);
+                }
+                if(arrow.classList.contains("down")){
+                    vel = getSinglePlayerUpdatedVelocity(40, singlePlayerState);
+                }
+                if(arrow.classList.contains("left")){
+                    vel = getSinglePlayerUpdatedVelocity(37, singlePlayerState);
+                }
+                if(arrow.classList.contains("right")){
+                    vel = getSinglePlayerUpdatedVelocity(39, singlePlayerState);
+                }
+                singlePlayerState.player.vel = vel;
+            });
+        });
+    }
 
     //game functionality
     function createSinglePlayerState(gameType) {
@@ -394,7 +399,6 @@ let mobile = window.screen.width < 992 ? true : false
     
     function generateFoodPieces(amount) {
         const pieces = [];
-        checkTurning();
         for(let i=0; i < amount; i++) {
             pieces.push({
                 x: Math.floor(Math.random() * GRID_SIZE),

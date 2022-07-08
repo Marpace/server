@@ -93,6 +93,7 @@ io.on('connection', (socket) => {
   socket.on('sendMessage', handleSendMessage);
   socket.on('chosenGameType', handleChosenGameType);
   socket.on('switchPlayerNumber', handleSwitchPlayerNumber);
+  socket.on('typing', handleTyping)
   
 
   function handleStartGame(game){
@@ -140,6 +141,10 @@ io.on('connection', (socket) => {
     if(vel) {
       multiplayerState[code].players[socket.number -1].vel = vel;
     }
+  }
+
+  function handleTyping(nickname) {
+    socket.broadcast.emit('displayTyping', nickname)
   }
 
   function handleNewMultiplayerGame(name) {

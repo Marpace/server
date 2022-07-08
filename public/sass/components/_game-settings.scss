@@ -32,6 +32,7 @@
         }
         &__section {
             width: 100%;
+            max-width: 500px;
             @include flex_centered(column);
             gap: 10px;
     
@@ -92,12 +93,21 @@
                 width: 100%;
                 position: relative;
                 cursor: pointer;
+                @include responsive($tablet_large) {
+                    text-align: center;
+                }
+                &:hover #game-type-dropdown__content {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                }
 
                 #dropdown-arrow-down {
                     position: absolute;
                     top: -2px;
                     right: 12px;
                     font-size: 1.6rem;
+                    color: $light_green;
                     @include responsive($tablet_large) {
                         display: none;
                     }
@@ -110,13 +120,19 @@
                     @include responsive($tablet_large) {
                         @include flex_centered(column);
                         align-items: flex-start;
-                        gap: 10px;
-                        margin-top: 10px;
+                        gap: 20px;
+                        margin-top: 30px;
                     }
 
-                    p:hover {
-                        background: $light_green;
-                        color: $very_dark_green;
+                    .game-type__option {
+                        color: $light_green;
+                        font-weight: 400;
+                        font-size: 1.2rem;
+
+                        &:hover {
+                            background: $light_green;
+                            color: $very_dark_green;
+                        }
                     }
                     .option-active {
                         background-color: $light_green;
@@ -135,14 +151,12 @@
                         }
                     }
                 }
-                &:hover #game-type-dropdown__content {
-                    display: block;
-                    @include responsive($tablet_large) {
-                        display: flex;
-                    }
-                }
             }
             .current-game-type {
+                width: 100%;
+                background-color: $light_green;
+                padding: 5px 10px;
+                text-align: center;
                 @include responsive($tablet_large) {
                     display: none;
                 }
@@ -153,7 +167,7 @@
             @include responsive($tablet_large) {
                 display: block;
                 position: absolute;
-                bottom: 20px;
+                bottom: 35px;
                 right: 20px;
                 font-size: 2rem;
                 color: $light_green;

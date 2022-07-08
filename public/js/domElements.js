@@ -63,12 +63,14 @@ export const gameChat = qs("#game-chat");
 export const messageInput = qs("#compose-message");
 export const sendMessageBtn = qs("#send-message-btn");
 export const sentMessagesContainer = qs("#sent-messages");
+export const displayTyping = qs(".typing")
 
 // mobile 
-export const mobileSettingsBtn = qs("#mobile-settings-trigger");
-export const mobileChatBtn = qs("#mobile-chat-trigger");
-export const gameAside = qs(".game-aside");
+export const mobileSettingsBtn = qs(".settings-icon");
+export const mobileChatBtn = qs(".chat-icon");
+export const gameSettings = qs("#game-settings");
 export const backArrow = qs(".back-arrow");
 export const mobileControlArrows = Array.from(qsa(".mobile-controls__arrow"));
 export const mobileStartGameBtn = qs("#mobile-start-game-btn");
 export const mobilePlayAgainBtn = qs("#mobile-play-again-btn");
+export const closeChatBtn = qs(".close-chat")

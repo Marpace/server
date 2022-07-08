@@ -5,14 +5,16 @@ const GRID_COLOUR = '#151201';
 const SNAKE_1_COLOUR = '#88F1D2';
 const SNAKE_2_COLOUR = '#FFEF5C';
 const FOOD_COLOUR = '#e66916';
+let mobile = window.screen.width < 993 ? true : false;
 
-export function handleCountdown() {
+export function handleCountdown(mobile) {
     let countdownTimer = 500;
     const countdown = [3, 2, 1, 0];
     DOM.countdownDisplay.innerHTML = "";
     DOM.countdownDisplay.style.top = "50%",
-    DOM.countdownDisplay.style.fontSize = "6.5rem"
     DOM.countdownDisplay.style.fontFamily = "'Bungee Shade', sans-serif"
+    DOM.countdownDisplay.style.fontSize = "6.5rem"
+    if(mobile) DOM.countdownDisplay.style.fontSize = "4rem"
     DOM.gameMessage.innerHTML = ""
     for(let number of countdown) {  
         setTimeout(() => {
@@ -40,13 +42,13 @@ export function handleUpdateAllYouCanEatTimer(seconds) {
 export function init() {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
-    if(window.screen.width < window.screen.height){
-        canvas.width = canvas.height = (window.screen.width / 100 ) * 90;
-    } else {
-        canvas.width = canvas.height = (window.screen.height / 100) * 70;
-    }
+    const canvasSize = parseInt(getComputedStyle(canvas).width.replace(/[px]/g, ""))
+
+    canvas.width = canvas.height = canvasSize;
+    
     ctx.fillStyle = GRID_COLOUR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
 }
 
 function paintGame(state) {

@@ -2,9 +2,13 @@
 main {
     position: relative;
     @include flex_centered(column);
-    margin: 30px 0 100px;
+    padding: 30px 0 100px;
     width: 100%;
     min-height: 100vh;
+    @include responsive($tablet_large) {
+        justify-content: flex-start;
+        gap: 60px;
+    }
 }
 
 .hidden {

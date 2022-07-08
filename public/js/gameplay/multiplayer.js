@@ -19,7 +19,8 @@ socket.on('init', handleInit);
 socket.on('updatePlayerTwoSettings', handleUpdatePlayerTwoSettings);
 socket.on('updateAllYouCanEatTimer', G.handleUpdateAllYouCanEatTimer);
 socket.on('updateChosenGameType', handleUpdateChosenGameType);
-socket.on('playerLeft', handlePlayerLeft)
+socket.on('playerLeft', handlePlayerLeft);
+socket.on('displayTyping', handleDisplayTyping);
 
 socket.on('postMessage', handlePostMessage);
 
@@ -30,9 +31,13 @@ let multiStats = {
     playerOne: {wins: 0, losses: 0},
     playerTwo: {wins: 0, losses: 0}
 }
+let mobile = window.screen.width < 993 ? true : false
 
 document.addEventListener('keydown', multiplayerKeydown);
+document.addEventListener('keypress', userTyping)
+
 G.init();
+
 
 if(playerNumber === 1) {
     DOM.gameTypeHeader.style.display = "none";
@@ -49,9 +54,13 @@ DOM.startGameBtn.addEventListener('click', startGame);
 DOM.playAgainBtn.addEventListener('click', startGame);
 
 function startGame() {
-    DOM.startGameBtn.style.display = "none";
-    DOM.playAgainBtn.classList.add("button-disabled");
-    DOM.playAgainBtn.style.display = "block";
+    if(!mobile) {
+        DOM.startGameBtn.style.display = "none";
+        DOM.playAgainBtn.classList.add("button-disabled");
+        DOM.playAgainBtn.style.display = "block";
+    } else {
+        DOM.mobileStartGameBtn.innerHTML = "Play again";
+    }
     const gameSettings = {
         mode: gameMode,
         speed: parseInt(DOM.speedInput.value),
@@ -80,12 +89,25 @@ function multiplayerKeydown(e) {
     }
 }
 
+function userTyping() {
+    if(DOM.messageInput === document.activeElement) {
+        socket.emit('typing', DOM.nickname.value)
+     }
+}
+
+function handleDisplayTyping(nickname) {
+    DOM.displayTyping.innerHTML = `${nickname} is typing...`
+    setTimeout(() => {
+        DOM.displayTyping.innerHTML = ""
+    }, 3000);
+}
+
 function handlePlayerLeft(code) {
     playerNumber = 1;
     DOM.goalSetting.classList.remove("player-2-settings");
     DOM.speedSetting.classList.remove("player-2-settings");
     DOM.startGameBtn.style.display = "block";
-    DOM.gameTypeDropdown.style.display = "flex";
+    DOM.gameTypeDropdown.style.display = "block";
     DOM.gameTypeHeader.style.display = "none";
     DOM.yourGameCode.innerHTML = "Game code: " + code;
     socket.emit('switchPlayerNumber')
@@ -125,8 +147,8 @@ function handleInit(playerNumber) {
     if(playerNumber === 1) {
         DOM.goalSetting.classList.remove("player-2-settings");
         DOM.speedSetting.classList.remove("player-2-settings");
-        DOM.startGameBtn.style.display = "block";
-        DOM.gameTypeDropdown.style.display = "flex";
+        if(!mobile) DOM.startGameBtn.style.display = "block";
+        DOM.gameTypeDropdown.style.display = "block";
         DOM.gameTypeHeader.style.display = "none";
     } else { 
         DOM.goalSetting.classList.add("player-2-settings");
@@ -170,9 +192,9 @@ function handleMultiplayerGameOver(winner) {
     DOM.playAgainBtn.classList.remove("button-disabled");
 
     if (winner === playerNumber) {
-        DOM.gameMessage.innerHTML = "You win!"
+        DOM.gameMessage.innerHTML = "You<br>win!"
     } else {
-        DOM.gameMessage.innerHTML = "You lose"
+        DOM.gameMessage.innerHTML = "You<br>lose"
     }
 }
 
@@ -208,6 +230,7 @@ function sendMessage() {
 }
 
 function handlePostMessage(data) {
+    DOM.displayTyping.innerHTML = "";
     const newMessage = document.createElement("div");
     const messageText = document.createElement("p");
 
@@ -256,3 +279,49 @@ DOM.gameTypeOptions.forEach(option => {
         socket.emit('chosenGameType', data)
     })
 });
+
+//Mobile //////////////////////////////////////////////////////////
+
+if(mobile) {
+
+
+
+    DOM.closeChatBtn.addEventListener('click', () => {
+        DOM.gameChat.style.left = "110%";
+        DOM.gameChat.style.transform = "translateX(0)";
+    });
+
+    DOM.mobileStartGameBtn.addEventListener('click', startGame);
+    
+    DOM.mobileSettingsBtn.addEventListener('click', () => {
+        DOM.gameSettings.style.left = "50%";
+        DOM.gameSettings.style.transform = "translateX(-50%)";
+    });
+    DOM.mobileChatBtn.addEventListener('click', () => {
+        DOM.gameChat.style.left = "50%";
+        DOM.gameChat.style.transform = "translateX(-50%)";
+    });
+    
+    DOM.backArrow.addEventListener('click', () => {
+        DOM.gameSettings.style.left = "-110%";
+    });
+    
+    DOM.mobileControlArrows.forEach(arrow => {
+        arrow.addEventListener('click', () => {
+            let vel;
+            if(arrow.classList.contains("up")){
+                vel = getSinglePlayerUpdatedVelocity(38, singlePlayerState);
+            }
+            if(arrow.classList.contains("down")){
+                vel = getSinglePlayerUpdatedVelocity(40, singlePlayerState);
+            }
+            if(arrow.classList.contains("left")){
+                vel = getSinglePlayerUpdatedVelocity(37, singlePlayerState);
+            }
+            if(arrow.classList.contains("right")){
+                vel = getSinglePlayerUpdatedVelocity(39, singlePlayerState);
+            }
+            singlePlayerState.player.vel = vel;
+        });
+    });
+}

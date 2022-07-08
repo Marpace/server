@@ -12,16 +12,16 @@
             <h1 id="game-message"></h1>
             <canvas id="canvas"></canvas>
             <div id="game-code-div">
+                <div class="settings-icon"></div>
                 <p id="your-game-code" class="text-info"></p>
-                <p class="text-info">controls: ← ↑ → ↓</p>
+                <p class="text-info controls-info">controls: ← ↑ → ↓</p>
+                <div class="chat-icon"></div>
             </div>
         </div>
         <%- include('partials/game-chat') -%>
         <%- include('partials/mobile-controls') -%>
         
         <!-- Only visible on portrait -->
-        <button id="mobile-settings-trigger" class="lobby-btn">Settings</button>
-        <button id="mobile-chat-trigger" class="lobby-btn">Chat</button>
         <button id="mobile-start-game-btn" class="lobby-btn">Start game</button>
 
     </div>
