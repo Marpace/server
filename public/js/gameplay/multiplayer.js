@@ -1,8 +1,8 @@
 import * as DOM from "../domElements.js"
 import * as G from "./game.js";
 
-const socket = io('https://snake-race.herokuapp.com');
-// const socket = io('http://localhost:3000');
+// const socket = io('https://snake-race.herokuapp.com');
+const socket = io('http://localhost:3000');
 
 socket.on('countdown', G.handleCountdown);
 socket.on('multiplayerGameState', G.handleGameState);
@@ -227,6 +227,7 @@ function sendMessage() {
     if(data.message === "") {return;};
     socket.emit('sendMessage', data);
     DOM.messageInput.value = "";
+    DOM.messageInput.focus();
 }
 
 function handlePostMessage(data) {
