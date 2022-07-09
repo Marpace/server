@@ -1,8 +1,8 @@
 import * as DOM from "../domElements.js"
 import * as G from "./game.js";
 
-// const socket = io('https://snake-race.herokuapp.com');
-const socket = io('http://localhost:3000');
+const socket = io('https://snake-race.herokuapp.com');
+// const socket = io('http://localhost:3000');
 
 socket.on('countdown', G.handleCountdown);
 socket.on('multiplayerGameState', G.handleGameState);
@@ -284,12 +284,17 @@ DOM.gameTypeOptions.forEach(option => {
 
 if(mobile) {
 
-
+    visualViewport.addEventListener('resize', () => {
+        DOM.sendMessageDiv.classList.add("keyboardOpen")
+        console.log("resized")
+    });
 
     DOM.closeChatBtn.addEventListener('click', () => {
         DOM.gameChat.style.left = "110%";
         DOM.gameChat.style.transform = "translateX(0)";
     });
+
+    DOM.mobileSendMessageBtn.addEventListener('click', sendMessage)
 
     DOM.mobileStartGameBtn.addEventListener('click', startGame);
     
@@ -325,3 +330,4 @@ if(mobile) {
         });
     });
 }
+

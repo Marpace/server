@@ -74,3 +74,5 @@ export const mobileControlArrows = Array.from(qsa(".mobile-controls__arrow"));
 export const mobileStartGameBtn = qs("#mobile-start-game-btn");
 export const mobilePlayAgainBtn = qs("#mobile-play-again-btn");
 export const closeChatBtn = qs(".close-chat")
+export const mobileSendMessageBtn = qs("#mobile-send-message-btn");
+export const sendMessageDiv = qs("#send-message");

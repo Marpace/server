@@ -139,12 +139,18 @@
             }
         }
         #mobile-send-message-btn {
-            height: 40px;
-            width: 40px;
-            background-color: $light_green;
-            border: none;
-            @include flex_centered(row);
+            display: none;
+            @include responsive($tablet_large) {
+                height: 40px;
+                width: 40px;
+                background-color: $light_green;
+                border: none;
+                @include flex_centered(row);
+            }
         }
 
+    }
+    .keyboardOpen {
+        margin-bottom: 50px;
     }
 }
