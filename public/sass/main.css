@@ -267,6 +267,7 @@ main {
   position: absolute;
   background-color: #151201;
   width: 100%;
+  padding: 10px;
 }
 @media only screen and (max-width: 992px) {
   .game-aside .game-info #game-type #game-type-dropdown__content {
@@ -283,7 +284,11 @@ main {
 .game-aside .game-info #game-type #game-type-dropdown__content .game-type__option {
   color: #B4DE3E;
   font-weight: 400;
-  font-size: 1.2rem;
+}
+@media only screen and (max-width: 992px) {
+  .game-aside .game-info #game-type #game-type-dropdown__content .game-type__option {
+    font-size: 1.2rem;
+  }
 }
 .game-aside .game-info #game-type #game-type-dropdown__content .game-type__option:hover {
   background: #B4DE3E;
@@ -442,11 +447,17 @@ main {
   text-align: center;
 }
 #game-chat #chat .close-chat {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  color: #B4DE3E;
-  font-size: 1.2rem;
+  display: none;
+}
+@media only screen and (max-width: 992px) {
+  #game-chat #chat .close-chat {
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #B4DE3E;
+    font-size: 1.2rem;
+  }
 }
 #game-chat #chat .typing {
   width: 100%;
@@ -680,7 +691,7 @@ main {
 }
 #game-screen .grid-container #game-message, #game-screen .grid-container #countdown {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 6.5rem;
@@ -712,45 +723,57 @@ main {
   }
 }
 #game-screen .grid-container #game-code-div .settings-icon {
-  height: 20px;
-  width: 20px;
-  background-color: #B4DE3E;
-  position: relative;
+  display: none;
 }
-#game-screen .grid-container #game-code-div .settings-icon::before {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: -1px;
-  height: 7px;
-  width: 22px;
-  background-color: #231D02;
-}
-#game-screen .grid-container #game-code-div .settings-icon::after {
-  content: "";
-  position: absolute;
-  top: 11px;
-  left: -1px;
-  height: 7px;
-  width: 22px;
-  background-color: #231D02;
+@media only screen and (max-width: 992px) {
+  #game-screen .grid-container #game-code-div .settings-icon {
+    display: block;
+    height: 20px;
+    width: 20px;
+    background-color: #B4DE3E;
+    position: relative;
+  }
+  #game-screen .grid-container #game-code-div .settings-icon::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: -1px;
+    height: 7px;
+    width: 22px;
+    background-color: #231D02;
+  }
+  #game-screen .grid-container #game-code-div .settings-icon::after {
+    content: "";
+    position: absolute;
+    top: 11px;
+    left: -1px;
+    height: 7px;
+    width: 22px;
+    background-color: #231D02;
+  }
 }
 #game-screen .grid-container #game-code-div .chat-icon {
-  width: 20px;
-  height: 15px;
-  border-radius: 5px;
-  background-color: #B4DE3E;
-  position: relative;
+  display: none;
 }
-#game-screen .grid-container #game-code-div .chat-icon:after {
-  content: "";
-  position: absolute;
-  left: 60%;
-  bottom: -3px;
-  height: 15px;
-  width: 15px;
-  border-radius: 50%;
-  border-left: 5px solid #B4DE3E;
+@media only screen and (max-width: 992px) {
+  #game-screen .grid-container #game-code-div .chat-icon {
+    display: block;
+    width: 20px;
+    height: 15px;
+    border-radius: 5px;
+    background-color: #B4DE3E;
+    position: relative;
+  }
+  #game-screen .grid-container #game-code-div .chat-icon:after {
+    content: "";
+    position: absolute;
+    left: 60%;
+    bottom: -3px;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    border-left: 5px solid #B4DE3E;
+  }
 }
 @media only screen and (max-width: 992px) {
   #game-screen .grid-container #game-code-div .controls-info {
@@ -769,21 +792,4 @@ main {
 #game-screen #mobile-play-again-btn {
   display: none;
   width: 100%;
-}
-#game-screen #mobile-settings-trigger {
-  display: none;
-}
-@media only screen and (max-width: 992px) {
-  #game-screen #mobile-settings-trigger {
-    display: block;
-    width: 100%;
-  }
-}
-#game-screen #mobile-chat-trigger {
-  display: none;
-}
-@media only screen and (max-width: 992px) {
-  #game-screen #mobile-chat-trigger {
-    display: block;
-  }
 }

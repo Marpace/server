@@ -1,8 +1,8 @@
 import * as DOM from "../domElements.js"
 import * as G from "./game.js";
 
-const socket = io('https://snake-race.herokuapp.com');
-// const socket = io('http://localhost:3000');
+// const socket = io('https://snake-race.herokuapp.com');
+const socket = io('http://localhost:3000');
 
 socket.on('countdown', G.handleCountdown);
 socket.on('multiplayerGameState', G.handleGameState);
@@ -25,13 +25,14 @@ socket.on('displayTyping', handleDisplayTyping);
 socket.on('postMessage', handlePostMessage);
 
 
-let gameMode = "";
 let playerNumber = parseInt(DOM.playerNumber.value); 
 let multiStats = {
     playerOne: {wins: 0, losses: 0},
     playerTwo: {wins: 0, losses: 0}
 }
 let mobile = window.screen.width < 993 ? true : false
+let typing, typingTimeout;
+
 
 document.addEventListener('keydown', multiplayerKeydown);
 document.addEventListener('keypress', userTyping)
@@ -62,7 +63,6 @@ function startGame() {
         DOM.mobileStartGameBtn.innerHTML = "Play again";
     }
     const gameSettings = {
-        mode: gameMode,
         speed: parseInt(DOM.speedInput.value),
         gameType: DOM.currentGameType.innerHTML,
         code: DOM.yourGameCode.innerHTML.split(" ")[2],
@@ -72,14 +72,11 @@ function startGame() {
 }
 
 function multiplayerKeydown(e) {
-    const data = {
-        keyCode: e.keyCode,
-        gameMode: gameMode
-    }
-    switch(e.keyCode){
+    const keyCode = e.keyCode;
+    switch(keyCode){
         case 37: case 39: case 38:  case 40: 
             e.preventDefault(); 
-            socket.emit('keydown', data)
+            socket.emit('keydown', keyCode)
          break; 
          case 13: 
          if(DOM.messageInput === document.activeElement) {
@@ -89,18 +86,6 @@ function multiplayerKeydown(e) {
     }
 }
 
-function userTyping() {
-    if(DOM.messageInput === document.activeElement) {
-        socket.emit('typing', DOM.nickname.value)
-     }
-}
-
-function handleDisplayTyping(nickname) {
-    DOM.displayTyping.innerHTML = `${nickname} is typing...`
-    setTimeout(() => {
-        DOM.displayTyping.innerHTML = ""
-    }, 3000);
-}
 
 function handlePlayerLeft(code) {
     playerNumber = 1;
@@ -135,8 +120,11 @@ function handleUpdatePlayerTwoSettings(settings) {
 }
 
 function handleNotEnoughtPlayers(){
-    DOM.startGameBtn.style.display = "block";
-    DOM.playAgainBtn.style.display = "none";
+    if(!mobile) {
+        DOM.startGameBtn.style.display = "block";
+        DOM.playAgainBtn.style.display = "none";
+    } else {
+    }
     DOM.gameMessage.innerHTML = "Not enough players"
     setTimeout(() => {
         DOM.gameMessage.innerHTML = ""
@@ -254,6 +242,27 @@ function handlePostMessage(data) {
     }
 }
 
+function userTyping(e) {
+    if(e.keyCode === 13) return;
+    if(DOM.messageInput === document.activeElement) {
+        typing = true;
+        socket.emit('typing', {nickname: DOM.nickname.value, typing: typing})
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+            typing = false;
+            socket.emit('typing', {nickname: DOM.nickname.value, typing: typing})
+        }, 3000);
+     }
+}
+
+function handleDisplayTyping(data) {
+    if(data.typing === true) {
+        DOM.displayTyping.innerHTML = `${data.nickname} is typing...`
+    } else {
+        DOM.displayTyping.innerHTML = ""
+    }
+}
+
 DOM.gameTypeOptions.forEach(option => {
     option.addEventListener('click', () => {
         if(option.innerHTML === "Pedal to the metal") {
@@ -314,20 +323,20 @@ if(mobile) {
     
     DOM.mobileControlArrows.forEach(arrow => {
         arrow.addEventListener('click', () => {
-            let vel;
+            let keyCode;
             if(arrow.classList.contains("up")){
-                vel = getSinglePlayerUpdatedVelocity(38, singlePlayerState);
+                keyCode = 38;
             }
             if(arrow.classList.contains("down")){
-                vel = getSinglePlayerUpdatedVelocity(40, singlePlayerState);
+                keyCode = 40;
             }
             if(arrow.classList.contains("left")){
-                vel = getSinglePlayerUpdatedVelocity(37, singlePlayerState);
+                keyCode = 37;
             }
             if(arrow.classList.contains("right")){
-                vel = getSinglePlayerUpdatedVelocity(39, singlePlayerState);
+                keyCode = 39;
             }
-            singlePlayerState.player.vel = vel;
+            socket.emit('keydown', keyCode)
         });
     });
 }

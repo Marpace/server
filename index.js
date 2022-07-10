@@ -127,9 +127,7 @@ io.on('connection', (socket) => {
     }, 4000);
   }
 
-  function handleKeydown(data) {
-    let keyCode = data.keyCode;
-    const mode = data.gameMode;
+  function handleKeydown(keyCode) {
     try {
       keyCode = parseInt(keyCode);
     } catch(e) {
@@ -143,8 +141,8 @@ io.on('connection', (socket) => {
     }
   }
 
-  function handleTyping(nickname) {
-    socket.broadcast.emit('displayTyping', nickname)
+  function handleTyping(data) {
+    socket.broadcast.emit('displayTyping', data)
   }
 
   function handleNewMultiplayerGame(name) {

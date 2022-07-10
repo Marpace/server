@@ -117,6 +117,7 @@
                     position: absolute;
                     background-color: $very_dark_green;
                     width: 100%;
+                    padding: 10px;
                     @include responsive($tablet_large) {
                         @include flex_centered(column);
                         align-items: flex-start;
@@ -127,7 +128,9 @@
                     .game-type__option {
                         color: $light_green;
                         font-weight: 400;
-                        font-size: 1.2rem;
+                        @include responsive($tablet_large) {
+                            font-size: 1.2rem;
+                        }
 
                         &:hover {
                             background: $light_green;

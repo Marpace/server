@@ -64,7 +64,7 @@ let mobile = window.screen.width < 993 ? true : false
             DOM.foodCount.innerHTML = singlePlayerFoodCount;
             document.addEventListener('keydown', singlePlayerKeydown);
         } else {
-            DOM.gameAside.style.left = "-110%"
+            DOM.gameSettings.style.left = "-110%"
             DOM.mobileStartGameBtn.style.display = "none";
             DOM.mobileSettingsBtn.style.display = "none";
             DOM.countdownDisplay.style.fontSize = "4rem";
@@ -172,12 +172,12 @@ let mobile = window.screen.width < 993 ? true : false
         });
     
         DOM.mobileSettingsBtn.addEventListener('click', () => {
-            DOM.gameAside.style.left = "50%";
-            DOM.gameAside.style.transform = "translateX(-50%)"
+            DOM.gameSettings.style.left = "50%";
+            DOM.gameSettings.style.transform = "translateX(-50%)"
         });
     
         DOM.backArrow.addEventListener('click', () => {
-            DOM.gameAside.style.left = "-110%"
+            DOM.gameSettings.style.left = "-110%"
         });
     
         DOM.mobileControlArrows.forEach(arrow => {
