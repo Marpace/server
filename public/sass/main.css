@@ -343,15 +343,16 @@ main {
   display: none;
 }
 
-#game-chat {
+.game-chat {
   width: 250px;
 }
 @media only screen and (max-width: 992px) {
-  #game-chat {
+  .game-chat {
     position: fixed;
     top: 0;
     left: 110%;
     z-index: 1000;
+    transform: translateX(0);
     transition: 0.5s ease-in-out;
     width: 100%;
     height: 100vh;
@@ -362,7 +363,7 @@ main {
     gap: 0px;
   }
 }
-#game-chat #chat {
+.game-chat #chat {
   width: 100%;
   height: 480px;
   background-color: #151201;
@@ -370,11 +371,11 @@ main {
   padding: 50px 0 30px;
 }
 @media only screen and (max-width: 992px) {
-  #game-chat #chat {
+  .game-chat #chat {
     height: calc(100vh - 70px);
   }
 }
-#game-chat #chat #sent-messages {
+.game-chat #chat #sent-messages {
   height: 100%;
   width: 100%;
   overflow-y: scroll;
@@ -388,34 +389,34 @@ main {
   gap: 20px;
   padding: 10px;
 }
-#game-chat #chat #sent-messages::-webkit-scrollbar {
+.game-chat #chat #sent-messages::-webkit-scrollbar {
   width: 7px;
 }
-#game-chat #chat #sent-messages::-webkit-scrollbar-track {
+.game-chat #chat #sent-messages::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   box-shadow: inset 0 0 6px rgba(158, 158, 158, 0.3);
   border-radius: 10px;
 }
-#game-chat #chat #sent-messages::-webkit-scrollbar-thumb {
+.game-chat #chat #sent-messages::-webkit-scrollbar-thumb {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgba(177, 177, 177, 0.5);
   box-shadow: inset 0 0 6px rgba(177, 177, 177, 0.5);
 }
-#game-chat #chat #sent-messages .chat-message {
+.game-chat #chat #sent-messages .chat-message {
   width: fit-content;
   max-width: 80%;
   padding: 10px;
   background-color: #e7e7e7;
   border-radius: 10px;
 }
-#game-chat #chat #sent-messages .chat-message p {
+.game-chat #chat #sent-messages .chat-message p {
   font-weight: 400;
 }
-#game-chat #chat #sent-messages .incoming-message {
+.game-chat #chat #sent-messages .incoming-message {
   align-self: flex-start;
   position: relative;
 }
-#game-chat #chat #sent-messages .incoming-message::after {
+.game-chat #chat #sent-messages .incoming-message::after {
   content: "";
   position: absolute;
   bottom: -5px;
@@ -425,11 +426,11 @@ main {
   border-radius: 50%;
   border-right: 5px solid #e7e7e7;
 }
-#game-chat #chat #sent-messages .outgoing-message {
+.game-chat #chat #sent-messages .outgoing-message {
   align-self: flex-end;
   position: relative;
 }
-#game-chat #chat #sent-messages .outgoing-message::after {
+.game-chat #chat #sent-messages .outgoing-message::after {
   content: "";
   position: absolute;
   bottom: -5px;
@@ -439,17 +440,17 @@ main {
   border-radius: 50%;
   border-left: 5px solid #e7e7e7;
 }
-#game-chat #chat #sent-messages .server-message {
+.game-chat #chat #sent-messages .server-message {
   min-width: 90%;
   margin: 10px 0;
   background-color: #B4DE3E;
   text-align: center;
 }
-#game-chat #chat .close-chat {
+.game-chat #chat .close-chat {
   display: none;
 }
 @media only screen and (max-width: 992px) {
-  #game-chat #chat .close-chat {
+  .game-chat #chat .close-chat {
     display: block;
     position: absolute;
     top: 10px;
@@ -458,14 +459,14 @@ main {
     font-size: 1.2rem;
   }
 }
-#game-chat #chat .typing {
+.game-chat #chat .typing {
   width: 100%;
   color: #B4DE3E;
   position: absolute;
   bottom: 5px;
   text-align: center;
 }
-#game-chat #send-message {
+.game-chat #send-message {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -475,11 +476,11 @@ main {
   width: 100%;
 }
 @media only screen and (max-width: 992px) {
-  #game-chat #send-message {
+  .game-chat #send-message {
     flex-direction: row;
   }
 }
-#game-chat #send-message #compose-message {
+.game-chat #send-message #compose-message {
   height: 40px;
   width: 100%;
   border: none;
@@ -488,24 +489,24 @@ main {
   font-weight: 400;
 }
 @media only screen and (max-width: 992px) {
-  #game-chat #send-message #compose-message {
+  .game-chat #send-message #compose-message {
     width: 80%;
   }
 }
-#game-chat #send-message #send-message-btn {
+.game-chat #send-message #send-message-btn {
   width: 100%;
   padding: 2px;
 }
 @media only screen and (max-width: 992px) {
-  #game-chat #send-message #send-message-btn {
+  .game-chat #send-message #send-message-btn {
     display: none;
   }
 }
-#game-chat #send-message #mobile-send-message-btn {
+.game-chat #send-message #mobile-send-message-btn {
   display: none;
 }
 @media only screen and (max-width: 992px) {
-  #game-chat #send-message #mobile-send-message-btn {
+  .game-chat #send-message #mobile-send-message-btn {
     height: 40px;
     width: 40px;
     background-color: #B4DE3E;
@@ -517,8 +518,13 @@ main {
     flex-wrap: wrap;
   }
 }
-#game-chat .keyboardOpen {
+.game-chat .keyboardOpen {
   margin-bottom: 50px;
+}
+
+.chat-open {
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .mobile-controls {
@@ -804,6 +810,17 @@ main {
     border-radius: 50%;
     border-left: 5px solid #B4DE3E;
   }
+}
+#game-screen .grid-container #game-code-div .notification::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background-color: red;
+  z-index: 1000;
 }
 @media only screen and (max-width: 992px) {
   #game-screen .grid-container #game-code-div .controls-info {

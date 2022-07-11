@@ -11,7 +11,6 @@ export function handleCountdown(mobile) {
     let countdownTimer = 500;
     const countdown = [3, 2, 1, 0];
     DOM.countdownDisplay.innerHTML = "";
-    DOM.countdownDisplay.style.top = "50%",
     DOM.countdownDisplay.style.fontFamily = "'Bungee Shade', sans-serif"
     DOM.countdownDisplay.style.fontSize = "6.5rem"
     if(mobile) DOM.countdownDisplay.style.fontSize = "4rem"
@@ -33,10 +32,13 @@ export function handleGameState(gameState) {
 }
 
 export function handleUpdateAllYouCanEatTimer(seconds) {
-    DOM.countdownDisplay.style.top = "-30px",
-    DOM.countdownDisplay.style.fontSize = "1.5rem"
-    DOM.countdownDisplay.style.fontFamily = "'Bungee', sans-serif"
-    DOM.countdownDisplay.innerHTML = seconds
+    if(mobile) {
+        DOM.countdownDisplay.style.left = "100px";
+    }
+    DOM.countdownDisplay.style.top = "calc(100% - 30px)",
+    DOM.countdownDisplay.style.fontSize = "1.5rem";
+    DOM.countdownDisplay.style.fontFamily = "'Bungee', sans-serif";
+    DOM.countdownDisplay.innerHTML = seconds;
 }
 
 export function init() {

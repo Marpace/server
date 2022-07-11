@@ -59,7 +59,7 @@ export const gamesPlayed = qs("#games-played")
 
 
 //game chat 
-export const gameChat = qs("#game-chat");
+export const gameChat = qs(".game-chat");
 export const messageInput = qs("#compose-message");
 export const sendMessageBtn = qs("#send-message-btn");
 export const sentMessagesContainer = qs("#sent-messages");

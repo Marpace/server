@@ -1,8 +1,8 @@
 import * as DOM from "../domElements.js"
 import * as G from "./game.js";
 
-const socket = io('https://snake-race.herokuapp.com');
-// const socket = io('http://localhost:3000');
+// const socket = io('https://snake-race.herokuapp.com');
+const socket = io('http://localhost:3000');
 
 socket.on('countdown', G.handleCountdown);
 socket.on('multiplayerGameState', G.handleGameState);
@@ -24,6 +24,7 @@ socket.on('displayTyping', handleDisplayTyping);
 
 socket.on('postMessage', handlePostMessage);
 
+console.log(getComputedStyle(DOM.gameChat).left)
 
 let playerNumber = parseInt(DOM.playerNumber.value); 
 let multiStats = {
@@ -89,10 +90,15 @@ function multiplayerKeydown(e) {
 
 function handlePlayerLeft(code) {
     playerNumber = 1;
+    if(!mobile) {
+        DOM.startGameBtn.style.display = "block";
+    } else {
+        DOM.mobileStartGameBtn.style.display = "block"
+        DOM.currentGameType.style.display = "none";
+    }
+    DOM.gameTypeDropdown.style.display = "block";
     DOM.goalSetting.classList.remove("player-2-settings");
     DOM.speedSetting.classList.remove("player-2-settings");
-    DOM.startGameBtn.style.display = "block";
-    DOM.gameTypeDropdown.style.display = "block";
     DOM.gameTypeHeader.style.display = "none";
     DOM.yourGameCode.innerHTML = "Game code: " + code;
     socket.emit('switchPlayerNumber')
@@ -239,11 +245,16 @@ function handlePostMessage(data) {
     } 
     if(data.author !== playerNumber && data.author !== "server") {
         newMessage.classList.add("incoming-message");
+        if(!DOM.gameChat.classList.contains("chat-open")) {
+            DOM.mobileChatBtn.classList.add("notification")
+        }
     } 
     if(data.author === "server") {
         newMessage.classList.add("server-message");
-        DOM.alertMessage.innerHTML = data.message;
-        DOM.alert.classList.add("show-message")
+        if(mobile){
+            DOM.alertMessage.innerHTML = data.message;
+            DOM.alert.classList.add("show-message")
+        }
     }
 }
 
@@ -305,8 +316,7 @@ if(mobile) {
     });
 
     DOM.closeChatBtn.addEventListener('click', () => {
-        DOM.gameChat.style.left = "110%";
-        DOM.gameChat.style.transform = "translateX(0)";
+        DOM.gameChat.classList.remove("chat-open")
     });
 
     DOM.mobileSendMessageBtn.addEventListener('click', sendMessage)
@@ -318,8 +328,8 @@ if(mobile) {
         DOM.gameSettings.style.transform = "translateX(-50%)";
     });
     DOM.mobileChatBtn.addEventListener('click', () => {
-        DOM.gameChat.style.left = "50%";
-        DOM.gameChat.style.transform = "translateX(-50%)";
+        DOM.gameChat.classList.add("chat-open")
+        DOM.mobileChatBtn.classList.remove("notification");
     });
     
     DOM.backArrow.addEventListener('click', () => {

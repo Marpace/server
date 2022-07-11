@@ -13,21 +13,26 @@
 
 </head>
 <body style="display: flex; justify-content: center; align-items: center">
-    <aside id="game-chat" class="game-aside">
-        <div id="chat">
-            <span class="close-chat">back →</span>
-            <div id="sent-messages">
-                <!-- messages get created in multiplayer.js and appended here  -->
+
+    <div id="game-screen">
+        <div class="alert">
+            <h1 class="alert-message"></h1>
+        </div>
+        <div class="grid-container">
+            <h1 id="countdown"></h1>
+            <h1 id="game-message"></h1>
+            <canvas id="canvas"></canvas>
+            <div id="game-code-div">
+                <div class="settings-icon"></div>
+                <p id="your-game-code" class="text-info"></p>
+                <p class="text-info controls-info">controls: ← ↑ → ↓</p>
+                <div class="chat-icon notification"></div>
             </div>
-            <p class="typing"></p>
         </div>
-        <div id="send-message">
-            <input id="compose-message" type="text" placeholder="Send message...">
-            <button id="send-message-btn" class="lobby-btn">Send</button>
-            <button id="mobile-send-message-btn">
-                <img src="icons/send_icon.png" alt="">
-            </button>
-        </div>
-    </aside>
+        
+        <!-- Only visible on portrait -->
+        <button id="mobile-start-game-btn" class="lobby-btn">Start game</button>
+
+    </div>
 </body>
 </html>
