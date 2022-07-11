@@ -2,16 +2,41 @@
     @include flex_centered(row);
     align-items: flex-start;
     gap: 30px;
-    // display: none;
     @include responsive($tablet_large) {
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
         position: relative;
         width: 90%;
-        min-height: 100vh;
     }
 
+    .alert {
+        position: absolute;
+        top: -100px;
+        width: 90%;
+        background-color: $light_green;
+        padding: 10px;
+        text-align: center;
+        z-index: 2000;
+        border-radius: 5px;
+        
+
+
+        &-message {
+            color: $very_dark_green;
+            font-weight: 400;
+        }
+    }
+    .show-message {
+        animation: showMessage 3s ease-in-out;
+    }
+
+    @keyframes showMessage {
+        0% {top: -100px}
+        20% {top: 50px}
+        80% {top: 50px}
+        100% {top: -100px}
+    }
     .grid-container {
         position: relative;
         margin-bottom: 50px;
@@ -43,6 +68,7 @@
             font-size: 4rem;
             @include responsive($tablet_large) {
                 font-size: 3rem;
+                line-height: 1.3;
             }
         }
         #game-code-div {

@@ -1,8 +1,8 @@
 import * as DOM from "../domElements.js"
 import * as G from "./game.js";
 
-// const socket = io('https://snake-race.herokuapp.com');
-const socket = io('http://localhost:3000');
+const socket = io('https://snake-race.herokuapp.com');
+// const socket = io('http://localhost:3000');
 
 socket.on('countdown', G.handleCountdown);
 socket.on('multiplayerGameState', G.handleGameState);
@@ -124,6 +124,7 @@ function handleNotEnoughtPlayers(){
         DOM.startGameBtn.style.display = "block";
         DOM.playAgainBtn.style.display = "none";
     } else {
+        DOM.mobileStartGameBtn.innerHTML = "Start game"
     }
     DOM.gameMessage.innerHTML = "Not enough players"
     setTimeout(() => {
@@ -144,6 +145,8 @@ function handleInit(playerNumber) {
         DOM.startGameBtn.style.display = "none";
         DOM.gameTypeDropdown.style.display = "none";
         DOM.gameTypeHeader.style.display = "block";
+        DOM.mobileStartGameBtn.style.display = "none";
+        DOM.currentGameType.style.display = "block"
     }
 }
 
@@ -239,6 +242,8 @@ function handlePostMessage(data) {
     } 
     if(data.author === "server") {
         newMessage.classList.add("server-message");
+        DOM.alertMessage.innerHTML = data.message;
+        DOM.alert.classList.add("show-message")
     }
 }
 

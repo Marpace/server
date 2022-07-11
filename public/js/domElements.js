@@ -76,3 +76,5 @@ export const mobilePlayAgainBtn = qs("#mobile-play-again-btn");
 export const closeChatBtn = qs(".close-chat")
 export const mobileSendMessageBtn = qs("#mobile-send-message-btn");
 export const sendMessageDiv = qs("#send-message");
+export const alert = qs(".alert");
+export const alertMessage = qs(".alert-message");

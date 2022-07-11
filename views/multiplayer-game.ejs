@@ -2,10 +2,16 @@
 <main>
     <input type="hidden" id="player-number" value=<%= playerNumber %>>
     <input type="hidden" id="nickname" value=<%= nickname %>>
+
+    
+    
     <% if(joinGame) { %>
         <input type="hidden" id="game-code" value=<%= gameCode %>>
     <% } %>
     <div id="game-screen">
+        <div class="alert">
+            <h1 class="alert-message"></h1>
+        </div>
         <%- include('partials/multiplayer-settings') -%>
         <div class="grid-container">
             <h1 id="countdown"></h1>
