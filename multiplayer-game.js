@@ -234,33 +234,35 @@ function randomFood(state) {
 
 
 function getMultiplayerUpdatedVelocity(keyCode, state, x) {
-  switch (keyCode) {
-    case 37: { // left
-      if(state.players[x].vel.x === 1) {
-        return { x: 1, y: 0 };
-      } else {
-        return { x: -1, y: 0 };
+  if(state !== undefined) {
+    switch (keyCode) {
+        case 37: { // left
+        if(state.players[x].vel.x === 1) {
+          return { x: 1, y: 0 };
+        } else {
+          return { x: -1, y: 0 };
+        }
       }
-    }
-    case 38: { // down
-      if(state.players[x].vel.y === 1) {
-        return { x: 0, y: 1 };
-      } else {
-        return { x: 0, y: -1 };
+      case 38: { // down
+        if(state.players[x].vel.y === 1) {
+          return { x: 0, y: 1 };
+        } else {
+          return { x: 0, y: -1 };
+        }
       }
-    }
-    case 39: { // right
-      if(state.players[x].vel.x === -1) {
-        return { x: -1, y: 0 };
-      } else {
-        return { x: 1, y: 0 };
+      case 39: { // right
+        if(state.players[x].vel.x === -1) {
+          return { x: -1, y: 0 };
+        } else {
+          return { x: 1, y: 0 };
+        }
       }
-    }
-    case 40: { // up
-      if(state.players[x].vel.y === -1) {
-        return { x: 0, y: -1 };
-      } else {
-        return { x: 0, y: 1 };
+      case 40: { // up
+        if(state.players[x].vel.y === -1) {
+          return { x: 0, y: -1 };
+        } else {
+          return { x: 0, y: 1 };
+        }
       }
     }
   }
