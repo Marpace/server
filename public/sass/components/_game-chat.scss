@@ -21,9 +21,10 @@
         height: 480px;
         background-color: $very_dark_green;
         position: relative;
-        padding: 50px 0 30px;
+        padding: 10px 0 30px;
         @include responsive($tablet_large) {
             height: calc(100vh - 70px);
+            padding: 50px 0 30px;
         }
         
         #sent-messages {
