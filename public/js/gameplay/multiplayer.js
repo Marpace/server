@@ -36,7 +36,7 @@ let typing, typingTimeout;
 
 
 document.addEventListener('keydown', multiplayerKeydown);
-document.addEventListener('keypress', userTyping)
+document.addEventListener('keyup', userTyping)
 
 G.init();
 

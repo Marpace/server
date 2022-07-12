@@ -4,9 +4,11 @@ main {
     @include flex_centered(column);
     padding: 30px 0;
     width: 100%;
+    height: 100vh;
     @include responsive($tablet_large) {
         justify-content: flex-start;
         gap: 60px;
+        height: fit-content;
     }
 }
 
