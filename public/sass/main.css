@@ -391,10 +391,8 @@ main {
   justify-content: flex-start;
   gap: 20px;
   padding: 10px;
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 .game-chat #chat #sent-messages::-webkit-scrollbar {
   display: none;
