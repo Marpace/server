@@ -4,16 +4,17 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {cors: {origin: "*"}});
-
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 const { 
   createMultiplayerGameState, 
   multiplayerGameLoop, 
   getMultiplayerUpdatedVelocity 
 } = require('./multiplayer-game');
 const { makeId } = require("./utils");
+
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 let FRAME_RATE;
 const multiplayerState = {};
@@ -25,11 +26,6 @@ let multiplayerGoal;
 let allYouCanEatSeconds = 60;
 
 const port = process.env.PORT || 3000
-
-app.use(express.static('public'));
-app.set('view engine', 'ejs');
-
-
 
 app.get('/', (req, res) => {
   res.render("index", {message: req.message, tryAgain: false});
