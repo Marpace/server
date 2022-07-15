@@ -103,7 +103,6 @@
             }
             .gif-message {
                 padding: 5px;
-                max-width: 90%;
                 &__img {
                     object-fit: contain;
                     width: 100%;
@@ -122,15 +121,10 @@
             flex-wrap: wrap;
             gap: 10px;
             padding: 10px;
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
             background-color: $very_dark_green;
             transition: .3s;
             display: none;
 
-            &::-webkit-scrollbar {
-                display: none;
-            }
             .giphy-attribution {
                 min-width: 100%;
                 text-align: center;

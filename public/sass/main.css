@@ -456,7 +456,6 @@ main {
 }
 .game-chat #chat #sent-messages .gif-message {
   padding: 5px;
-  max-width: 90%;
 }
 .game-chat #chat #sent-messages .gif-message__img {
   object-fit: contain;
@@ -474,13 +473,8 @@ main {
   flex-wrap: wrap;
   gap: 10px;
   padding: 10px;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
   background-color: #151201;
   transition: 0.3s;
-  display: none;
-}
-.game-chat #chat .gif-display::-webkit-scrollbar {
   display: none;
 }
 .game-chat #chat .gif-display .giphy-attribution {

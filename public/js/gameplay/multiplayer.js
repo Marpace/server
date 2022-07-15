@@ -34,6 +34,7 @@ let multiStats = {
 let mobile = window.screen.width < 993 ? true : false
 let typing, typingTimeout;
 const GIPHY_API_KEY = "XZ1XB9l5SzJmOWNCfvS7TiNhAz3fbG0q"
+let originalGifs = [];
 
 
 document.addEventListener('keydown', multiplayerKeydown);
@@ -309,13 +310,17 @@ function toggleGifs() {
 
 DOM.gifImages.forEach(img => {
     img.addEventListener('click', () => {
+        const index = DOM.gifImages.indexOf(img);
         const data = {
-            url: img.src,
+            url: originalGifs[index],
             messageType: "gif",
             author: playerNumber
         }
         toggleGifs();
-        socket.emit('sendMessage', data)
+        socket.emit('sendMessage', data);
+        DOM.gifImages.forEach(img => {
+            img.style.display = "none";
+        });
     });
 });
 
@@ -327,10 +332,13 @@ function fetchGifs() {
     .then(content => {
         let index = 0
         DOM.gifImages.forEach(img => {
-            const url = content.data[index].images.original.url
+            const url = content.data[index].images.fixed_width_downsampled.url
             const alt = content.data[index].title
-            img.src = url;
             img.style.display = "block";
+            img.src = url;
+            img.alt = alt;
+            img.style.display = "block";
+            originalGifs[index] = content.data[index].images.original.url;
             index++
         });
         DOM.gifDisplay.scroll({
