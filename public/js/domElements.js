@@ -63,7 +63,11 @@ export const gameChat = qs(".game-chat");
 export const messageInput = qs("#compose-message");
 export const sendMessageBtn = qs("#send-message-btn");
 export const sentMessagesContainer = qs("#sent-messages");
-export const displayTyping = qs(".typing")
+export const displayTyping = qs(".typing");
+export const gifBtn = qs(".gif-icon");
+export const gifSearchInput = qs(".gif-search-input");
+export const gifDisplay = qs(".gif-display");
+export const gifImages = Array.from(qsa(".gif-img"));
 
 // mobile 
 export const mobileSettingsBtn = qs(".settings-icon");

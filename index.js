@@ -175,8 +175,9 @@ io.on('connection', (socket) => {
     }
     
     socket.broadcast.emit('postMessage', {
-      author: "server",
-      message: `${playerTwo} joined the game`
+      message: `${playerTwo} joined the game`,
+      messageType: "text",
+      author: "server"
     })
     rooms[gameCode].playerCount = 2;
     rooms[gameCode].playerTwoName = playerTwo;
@@ -208,8 +209,6 @@ io.on('connection', (socket) => {
     const room = rooms[code];
     const playerOneName = room.playerOneName;
     const playerTwoName = room.playerTwoName;
-    const playerOneId = room.playerOneId
-    const playerTwoId = room.playerTwoId
     if(room) {
       room.playerCount--
       if(room.playerCount < 1) {

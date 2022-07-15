@@ -33,6 +33,7 @@ let multiStats = {
 }
 let mobile = window.screen.width < 993 ? true : false
 let typing, typingTimeout;
+const GIPHY_API_KEY = "XZ1XB9l5SzJmOWNCfvS7TiNhAz3fbG0q"
 
 
 document.addEventListener('keydown', multiplayerKeydown);
@@ -82,6 +83,9 @@ function multiplayerKeydown(e) {
          case 13: 
          if(DOM.messageInput === document.activeElement) {
             sendMessage();
+         }
+         if(DOM.gifSearchInput === document.activeElement) {
+            fetchGifs();
          }
         default: break; 
     }
@@ -219,6 +223,7 @@ DOM.sendMessageBtn.addEventListener('click', sendMessage)
 function sendMessage() {
     const data = {
         message: DOM.messageInput.value,
+        messageType: "text",
         author: playerNumber
     }
     if(data.message === "") {return;};
@@ -228,17 +233,23 @@ function sendMessage() {
 }
 
 function handlePostMessage(data) {
-    DOM.displayTyping.innerHTML = "";
+    let messageContent;
     const newMessage = document.createElement("div");
-    const messageText = document.createElement("p");
+    if(data.messageType === "text") {
+        DOM.displayTyping.innerHTML = "";
+        messageContent = document.createElement("p");
+        messageContent.innerHTML = data.message
+    }
+    if(data.messageType === "gif") {
+        messageContent = document.createElement("img");
+        messageContent.src = data.url;
+        messageContent.classList.add("gif-message__img")
+        newMessage.classList.add("gif-message");
+    }
 
     newMessage.classList.add("chat-message");
-    messageText.innerHTML = data.message
-
-    newMessage.appendChild(messageText);
+    newMessage.appendChild(messageContent);
     DOM.sentMessagesContainer.appendChild(newMessage);
-
-    DOM.sentMessagesContainer.scrollTop = DOM.sentMessagesContainer.scrollHeight;
 
     if(data.author === playerNumber){
         newMessage.classList.add("outgoing-message");
@@ -256,6 +267,8 @@ function handlePostMessage(data) {
             DOM.alert.classList.add("show-message")
         }
     }
+    DOM.sentMessagesContainer.scrollTop = DOM.sentMessagesContainer.scrollHeight;
+    console.log("scrolled")
 }
 
 function userTyping(e) {
@@ -278,6 +291,59 @@ function handleDisplayTyping(data) {
         DOM.displayTyping.innerHTML = ""
     }
 }
+
+DOM.gifBtn.addEventListener('click', toggleGifs);
+
+function toggleGifs() {
+    DOM.gifSearchInput.classList.toggle("show-input");
+    DOM.gifDisplay.classList.toggle("show-flex");
+    if(DOM.gifBtn.innerHTML === "GIF") {
+        DOM.gifBtn.innerHTML = "CLOSE"
+        DOM.gifSearchInput.focus();
+    } else {
+        DOM.gifBtn.innerHTML = "GIF"
+    }
+}
+
+// DOM.gifSearchInput.addEventListener('change', fetchGifs)
+
+DOM.gifImages.forEach(img => {
+    img.addEventListener('click', () => {
+        const data = {
+            url: img.src,
+            messageType: "gif",
+            author: playerNumber
+        }
+        toggleGifs();
+        socket.emit('sendMessage', data)
+    });
+});
+
+function fetchGifs() {
+    let gifSearchValue = DOM.gifSearchInput.value.trim();
+    let url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&limit=20&bundle=messaging_non_clips&q=${gifSearchValue}`
+    fetch(url)
+    .then(response => response.json())
+    .then(content => {
+        let index = 0
+        DOM.gifImages.forEach(img => {
+            const url = content.data[index].images.original.url
+            const alt = content.data[index].title
+            img.src = url;
+            img.style.display = "block";
+            index++
+        });
+        DOM.gifDisplay.scroll({
+            top: 0,
+            behavior: 'smooth'
+        });
+        console.log(content.data)
+    })
+    .catch(err => {
+        console.log(err);
+    })
+}
+
 
 DOM.gameTypeOptions.forEach(option => {
     option.addEventListener('click', () => {

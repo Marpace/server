@@ -21,12 +21,24 @@
         height: 480px;
         background-color: $very_dark_green;
         position: relative;
-        padding: 10px 0 30px;
+        padding: 10px 0 20px;
         @include responsive($tablet_large) {
             height: calc(100vh - 70px);
             padding: 50px 0 30px;
         }
         
+        
+        .close-chat {
+            display: none; 
+            @include responsive($tablet_large) {
+                display: block;
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                color: $light_green;
+                font-size: 1.2rem;
+            }
+        }
         #sent-messages {
             height: 100%;
             width: 100%;
@@ -89,24 +101,91 @@
                 background-color: $light_green;
                 text-align: center;
             }
-        }
-        .close-chat {
-            display: none; 
-            @include responsive($tablet_large) {
-                display: block;
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                color: $light_green;
-                font-size: 1.2rem;
+            .gif-message {
+                padding: 5px;
+                max-width: 90%;
+                &__img {
+                    object-fit: contain;
+                    width: 100%;
+                    border-radius: 10px;
+                }
             }
         }
-        .typing {
-            width: 100%;
-            color: $light_green;
+        .gif-display {
             position: absolute;
-            bottom: 5px;
-            text-align: center;
+            top: 0;
+            height: calc(100% - 20px);
+            width: 100%;
+            overflow-y: scroll;
+            display: flex;
+            justify-content: space-evenly;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            background-color: $very_dark_green;
+            transition: .3s;
+            display: none;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+            .giphy-attribution {
+                min-width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+                color: $light_green;
+            }
+            .gif-img {
+                width: 90%;
+                height: 180px;
+                object-fit: cover;
+                background-color: $very_dark_green;
+                cursor: pointer;
+                display: none;
+            }
+        }
+        .chat__bottom {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 10px 0;
+            background-color: $dark_green;
+            gap: 10px;
+
+            .typing {
+                color: $light_green;
+            }
+            .gif-icon {
+                color: #e7e7e7;
+                padding: 0 4px;
+                border-radius: 3px;
+                border: 2px solid #e7e7e7;
+                font-size: .8rem;
+                font-weight: 400;
+                cursor: pointer;
+                transition: .2s;
+                background-color: $dark_green;
+
+                &:hover {
+                    color: $very_dark_green;
+                    background-color: #e7e7e7;
+                }
+            }
+            .gif-search-input {
+                height: 0;
+                width: 100%;
+                border: none;
+                background-color: #e7e7e7;
+                padding: 0 10px;
+                font-weight: 400;
+                transition: .4s;
+            }
+            .show-input{
+                height: 40px;
+            }
         }
     }
     #send-message {

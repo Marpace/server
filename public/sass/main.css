@@ -370,12 +370,25 @@ main {
   height: 480px;
   background-color: #151201;
   position: relative;
-  padding: 10px 0 30px;
+  padding: 10px 0 20px;
 }
 @media only screen and (max-width: 992px) {
   .game-chat #chat {
     height: calc(100vh - 70px);
     padding: 50px 0 30px;
+  }
+}
+.game-chat #chat .close-chat {
+  display: none;
+}
+@media only screen and (max-width: 992px) {
+  .game-chat #chat .close-chat {
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #B4DE3E;
+    font-size: 1.2rem;
   }
 }
 .game-chat #chat #sent-messages {
@@ -441,25 +454,87 @@ main {
   background-color: #B4DE3E;
   text-align: center;
 }
-.game-chat #chat .close-chat {
+.game-chat #chat #sent-messages .gif-message {
+  padding: 5px;
+  max-width: 90%;
+}
+.game-chat #chat #sent-messages .gif-message__img {
+  object-fit: contain;
+  width: 100%;
+  border-radius: 10px;
+}
+.game-chat #chat .gif-display {
+  position: absolute;
+  top: 0;
+  height: calc(100% - 20px);
+  width: 100%;
+  overflow-y: scroll;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  background-color: #151201;
+  transition: 0.3s;
   display: none;
 }
-@media only screen and (max-width: 992px) {
-  .game-chat #chat .close-chat {
-    display: block;
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    color: #B4DE3E;
-    font-size: 1.2rem;
-  }
+.game-chat #chat .gif-display::-webkit-scrollbar {
+  display: none;
 }
-.game-chat #chat .typing {
-  width: 100%;
-  color: #B4DE3E;
-  position: absolute;
-  bottom: 5px;
+.game-chat #chat .gif-display .giphy-attribution {
+  min-width: 100%;
   text-align: center;
+  margin-bottom: 10px;
+  color: #B4DE3E;
+}
+.game-chat #chat .gif-display .gif-img {
+  width: 90%;
+  height: 180px;
+  object-fit: cover;
+  background-color: #151201;
+  cursor: pointer;
+  display: none;
+}
+.game-chat #chat .chat__bottom {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 10px 0;
+  background-color: #231D02;
+  gap: 10px;
+}
+.game-chat #chat .chat__bottom .typing {
+  color: #B4DE3E;
+}
+.game-chat #chat .chat__bottom .gif-icon {
+  color: #e7e7e7;
+  padding: 0 4px;
+  border-radius: 3px;
+  border: 2px solid #e7e7e7;
+  font-size: 0.8rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: 0.2s;
+  background-color: #231D02;
+}
+.game-chat #chat .chat__bottom .gif-icon:hover {
+  color: #151201;
+  background-color: #e7e7e7;
+}
+.game-chat #chat .chat__bottom .gif-search-input {
+  height: 0;
+  width: 100%;
+  border: none;
+  background-color: #e7e7e7;
+  padding: 0 10px;
+  font-weight: 400;
+  transition: 0.4s;
+}
+.game-chat #chat .chat__bottom .show-input {
+  height: 40px;
 }
 .game-chat #send-message {
   display: flex;
