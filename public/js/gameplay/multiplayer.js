@@ -1,8 +1,8 @@
 import * as DOM from "../domElements.js"
 import * as G from "./game.js";
 
-const socket = io('https://snake-race.herokuapp.com');
-// const socket = io('http://localhost:3000');
+// const socket = io('https://snake-race.herokuapp.com');
+const socket = io('http://localhost:3000');
 
 socket.on('countdown', G.handleCountdown);
 socket.on('multiplayerGameState', G.handleGameState);
@@ -35,18 +35,18 @@ let mobile = window.screen.width < 993 ? true : false
 let typing, typingTimeout;
 const GIPHY_API_KEY = "XZ1XB9l5SzJmOWNCfvS7TiNhAz3fbG0q"
 let originalGifs = [];
+let gifStills = [];
+
 
 
 document.addEventListener('keydown', multiplayerKeydown);
 document.addEventListener('keyup', userTyping)
 
 G.init();
-console.log("init")
 
 if(playerNumber === 1) {
     DOM.gameTypeHeader.style.display = "none";
     socket.emit('newMultiplayerGame', DOM.nickname.value);
-    console.log("emited new multiplayer game")
 } else if (playerNumber === 2) {
     const data = {
         code: DOM.gameCode.value,
@@ -241,7 +241,8 @@ function handlePostMessage(data) {
     const author = data.author;
     const message = data.message;
     const url = data.url;
-    createNewMessage(type, author, message, url);
+    const stillUrl = data.stillUrl;
+    createNewMessage(type, author, message, url, stillUrl);
     setTimeout(() => {
         scrollMessages();
     }, 200);
@@ -251,7 +252,7 @@ function scrollMessages() {
     DOM.sentMessagesContainer.scrollTop = DOM.sentMessagesContainer.scrollHeight;
 }
 
-function createNewMessage(type, author, message, url) {
+function createNewMessage(type, author, message, url, stillUrl) {
     const newMessage = document.createElement("div");
     newMessage.classList.add("chat-message");
     if(type === "text") {
@@ -268,6 +269,17 @@ function createNewMessage(type, author, message, url) {
         newMessage.classList.add("gif-message");
         newMessage.appendChild(gifMessageContent);
         DOM.sentMessagesContainer.appendChild(newMessage);
+        if(!mobile) {
+            setTimeout(() => {
+                gifMessageContent.src = stillUrl
+                gifMessageContent.addEventListener('mouseenter', () => {
+                    gifMessageContent.src = url
+                });
+                gifMessageContent.addEventListener('mouseleave', () => {
+                    gifMessageContent.src = stillUrl
+                });
+            }, 6000);
+        }
     }
 
     if(author === playerNumber){
@@ -309,20 +321,24 @@ function handleDisplayTyping(data) {
     }
 }
 
+
+if(mobile) {
+    DOM.gifSearchInput.addEventListener('input', fetchGifs)
+}
 DOM.gifBtn.addEventListener('click', toggleGifs);
 
 function toggleGifs() {
     DOM.gifDisplay.classList.toggle("show-flex");
-    DOM.messageInput.classList.toggle("input-hidden")
-    DOM.gifSearchInput.classList.toggle("input-hidden")
-    DOM.gifBtn.classList.toggle("active-gif-button")
+    DOM.messageInput.classList.toggle("input-hidden");
+    DOM.gifSearchInput.classList.toggle("input-hidden");
+    DOM.gifBtn.classList.toggle("active-gif-button");
 }
-
 
 DOM.gifImages.forEach(img => {
     img.addEventListener('click', () => {
         const index = DOM.gifImages.indexOf(img);
         const data = {
+            stillUrl: gifStills[index],
             url: originalGifs[index],
             messageType: "gif",
             author: playerNumber
@@ -337,7 +353,7 @@ DOM.gifImages.forEach(img => {
 
 function fetchGifs() {
     let gifSearchValue = DOM.gifSearchInput.value.trim();
-    let url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&limit=20&bundle=messaging_non_clips&q=${gifSearchValue}`
+    let url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&limit=20&q=${gifSearchValue}`
     fetch(url)
     .then(response => response.json())
     .then(content => {
@@ -348,6 +364,7 @@ function fetchGifs() {
             img.src = url;
             img.alt = alt;
             originalGifs[index] = content.data[index].images.original.url;
+            gifStills[index] = content.data[index].images.downsized_still.url;
             index++
             img.style.display = "block";
         });
@@ -394,10 +411,10 @@ DOM.gameTypeOptions.forEach(option => {
 
 if(mobile) {
 
-    visualViewport.addEventListener('resize', () => {
-        DOM.sendMessageDiv.classList.add("keyboardOpen")
-        console.log("resized")
-    });
+    // visualViewport.addEventListener('resize', () => {
+    //     DOM.sendMessageDiv.classList.add("keyboardOpen")
+    //     console.log("resized")
+    // });
 
     DOM.mobileChatBtn.addEventListener('click', () => {
         DOM.gameChat.classList.add("mobile-chat-open")

@@ -377,7 +377,7 @@ main {
 }
 @media only screen and (max-width: 992px) {
   .game-chat #chat {
-    height: calc(100vh - 70px);
+    height: calc(100vh - 100px);
     padding: 50px 0 30px;
   }
 }
@@ -561,6 +561,7 @@ main {
     justify-content: center;
     flex-wrap: nowrap;
     width: 90%;
+    margin-bottom: 50px;
   }
 }
 .game-chat #send-message .gif-icon {
@@ -631,9 +632,6 @@ main {
     align-items: center;
     flex-wrap: wrap;
   }
-}
-.game-chat .keyboardOpen {
-  margin-bottom: 50px;
 }
 
 .mobile-chat-open {

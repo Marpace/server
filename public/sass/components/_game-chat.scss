@@ -23,7 +23,7 @@
         position: relative;
         padding: 10px 0 20px;
         @include responsive($tablet_large) {
-            height: calc(100vh - 70px);
+            height: calc(100vh - 100px);
             padding: 50px 0 30px;
         }
         
@@ -198,6 +198,7 @@
             justify-content: center;
             flex-wrap: nowrap;
             width: 90%;
+            margin-bottom: 50px;
         }
 
         .gif-icon {
@@ -262,9 +263,6 @@
             }
         }
 
-    }
-    .keyboardOpen {
-        margin-bottom: 50px;
     }
 }
 .mobile-chat-open {
