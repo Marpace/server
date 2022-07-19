@@ -1,8 +1,8 @@
 import * as DOM from "../domElements.js"
 import * as G from "./game.js";
 
-const socket = io('https://snake-race.herokuapp.com');
-// const socket = io('http://localhost:3000');
+// const socket = io('https://snake-race.herokuapp.com');
+const socket = io('http://localhost:3000');
 
 socket.on('countdown', G.handleCountdown);
 socket.on('multiplayerGameState', G.handleGameState);
@@ -22,7 +22,7 @@ socket.on('updateChosenGameType', handleUpdateChosenGameType);
 socket.on('playerLeft', handlePlayerLeft);
 socket.on('displayTyping', handleDisplayTyping);
 
-socket.on('postMessage', handlePostMessage);
+socket.on('postMessage', handlePostMessage)
 
 console.log(getComputedStyle(DOM.gameChat).left)
 
@@ -41,11 +41,12 @@ document.addEventListener('keydown', multiplayerKeydown);
 document.addEventListener('keyup', userTyping)
 
 G.init();
-
+console.log("init")
 
 if(playerNumber === 1) {
     DOM.gameTypeHeader.style.display = "none";
     socket.emit('newMultiplayerGame', DOM.nickname.value);
+    console.log("emited new multiplayer game")
 } else if (playerNumber === 2) {
     const data = {
         code: DOM.gameCode.value,
@@ -219,6 +220,8 @@ function reset() {
     DOM.gameCode.value = '';
 }
 
+//CHAT ///////////////////////////////////////////////////////////
+
 DOM.sendMessageBtn.addEventListener('click', sendMessage)
 
 function sendMessage() {
@@ -234,42 +237,55 @@ function sendMessage() {
 }
 
 function handlePostMessage(data) {
-    let messageContent;
+    const type = data.messageType;
+    const author = data.author;
+    const message = data.message;
+    const url = data.url;
+    createNewMessage(type, author, message, url);
+    setTimeout(() => {
+        scrollMessages();
+    }, 200);
+}
+
+function scrollMessages() {
+    DOM.sentMessagesContainer.scrollTop = DOM.sentMessagesContainer.scrollHeight;
+}
+
+function createNewMessage(type, author, message, url) {
     const newMessage = document.createElement("div");
-    if(data.messageType === "text") {
-        DOM.displayTyping.innerHTML = "";
-        messageContent = document.createElement("p");
-        messageContent.innerHTML = data.message
-    }
-    if(data.messageType === "gif") {
-        messageContent = document.createElement("img");
-        messageContent.src = data.url;
-        messageContent.classList.add("gif-message__img")
-        newMessage.classList.add("gif-message");
-    }
-
     newMessage.classList.add("chat-message");
-    newMessage.appendChild(messageContent);
-    DOM.sentMessagesContainer.appendChild(newMessage);
+    if(type === "text") {
+        DOM.displayTyping.innerHTML = "";
+        const textMessageContent = document.createElement("p");
+        textMessageContent.innerHTML = message
+        newMessage.appendChild(textMessageContent);
+        DOM.sentMessagesContainer.appendChild(newMessage);
+    }
+    if(type === "gif") {
+        const gifMessageContent = document.createElement("img");
+        gifMessageContent.src = url;
+        gifMessageContent.classList.add("gif-message__img")
+        newMessage.classList.add("gif-message");
+        newMessage.appendChild(gifMessageContent);
+        DOM.sentMessagesContainer.appendChild(newMessage);
+    }
 
-    if(data.author === playerNumber){
+    if(author === playerNumber){
         newMessage.classList.add("outgoing-message");
     } 
-    if(data.author !== playerNumber && data.author !== "server") {
+    if(author !== playerNumber && author !== "server") {
         newMessage.classList.add("incoming-message");
         if(!DOM.gameChat.classList.contains("chat-open")) {
             DOM.mobileChatBtn.classList.add("notification")
         }
     } 
-    if(data.author === "server") {
+    if(author === "server") {
         newMessage.classList.add("server-message");
         if(mobile){
-            DOM.alertMessage.innerHTML = data.message;
+            DOM.alertMessage.innerHTML = message;
             DOM.alert.classList.add("show-message")
         }
     }
-    DOM.sentMessagesContainer.scrollTop = DOM.sentMessagesContainer.scrollHeight;
-    console.log("scrolled")
 }
 
 function userTyping(e) {
@@ -296,17 +312,12 @@ function handleDisplayTyping(data) {
 DOM.gifBtn.addEventListener('click', toggleGifs);
 
 function toggleGifs() {
-    DOM.gifSearchInput.classList.toggle("show-input");
     DOM.gifDisplay.classList.toggle("show-flex");
-    if(DOM.gifBtn.innerHTML === "GIF") {
-        DOM.gifBtn.innerHTML = "CLOSE"
-        DOM.gifSearchInput.focus();
-    } else {
-        DOM.gifBtn.innerHTML = "GIF"
-    }
+    DOM.messageInput.classList.toggle("input-hidden")
+    DOM.gifSearchInput.classList.toggle("input-hidden")
+    DOM.gifBtn.classList.toggle("active-gif-button")
 }
 
-// DOM.gifSearchInput.addEventListener('change', fetchGifs)
 
 DOM.gifImages.forEach(img => {
     img.addEventListener('click', () => {
@@ -334,12 +345,11 @@ function fetchGifs() {
         DOM.gifImages.forEach(img => {
             const url = content.data[index].images.fixed_width_downsampled.url
             const alt = content.data[index].title
-            img.style.display = "block";
             img.src = url;
             img.alt = alt;
-            img.style.display = "block";
             originalGifs[index] = content.data[index].images.original.url;
             index++
+            img.style.display = "block";
         });
         DOM.gifDisplay.scroll({
             top: 0,
@@ -389,8 +399,13 @@ if(mobile) {
         console.log("resized")
     });
 
+    DOM.mobileChatBtn.addEventListener('click', () => {
+        DOM.gameChat.classList.add("mobile-chat-open")
+        DOM.mobileChatBtn.classList.remove("notification");
+    });
+
     DOM.closeChatBtn.addEventListener('click', () => {
-        DOM.gameChat.classList.remove("chat-open")
+        DOM.gameChat.classList.remove("mobile-chat-open")
     });
 
     DOM.mobileSendMessageBtn.addEventListener('click', sendMessage)
@@ -401,10 +416,7 @@ if(mobile) {
         DOM.gameSettings.style.left = "50%";
         DOM.gameSettings.style.transform = "translateX(-50%)";
     });
-    DOM.mobileChatBtn.addEventListener('click', () => {
-        DOM.gameChat.classList.add("chat-open")
-        DOM.mobileChatBtn.classList.remove("notification");
-    });
+   
     
     DOM.backArrow.addEventListener('click', () => {
         DOM.gameSettings.style.left = "-110%";

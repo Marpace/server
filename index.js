@@ -158,6 +158,7 @@ io.on('connection', (socket) => {
     socket.number = 1;
     socket.emit("init", 1);
     io.sockets.in(roomName).emit('displayPlayerOne' , name)
+    console.log("new multiplayer game")
   }
 
   function handleJoinGame(data){
