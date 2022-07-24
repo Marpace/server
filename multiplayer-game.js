@@ -6,7 +6,7 @@ module.exports = {
    getMultiplayerUpdatedVelocity
 }
   
-function createMultiplayerGameState(gameType) {
+function createMultiplayerGameState(gameType, playerOneColor, playerTwoColor) {
   const players = [
     {
       pos: {
@@ -22,6 +22,7 @@ function createMultiplayerGameState(gameType) {
         {x: 5, y: 15},
         {x: 6, y: 15},
       ],
+      snakeColor: playerOneColor
     }, {
       pos: {
         x: 21,
@@ -36,6 +37,7 @@ function createMultiplayerGameState(gameType) {
         {x: 22, y: 15},
         {x: 21, y: 15},
       ],
+      snakeColor: playerTwoColor
     }
   ];
   let food; 

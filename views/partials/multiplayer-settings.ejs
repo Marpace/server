@@ -35,7 +35,7 @@
         </div>
         <div id="game-type" class="game-info__section">
             <div id="game-type-dropdown" >
-                <span id="game-type-dropdown__title" class="game-info__section-title">Choose game type </span><span id="dropdown-arrow-down">▾</span>
+                <span id="game-type-dropdown__title" class="game-info__section-title">Choose game type </span><span class="dropdown-arrow-down">▾</span>
                 <div id="game-type-dropdown__content">
                     <p class="game-type__option option-active">Classic</p>
                     <p class="game-type__option">Live bait</p>
@@ -45,6 +45,30 @@
             </div>
             <h1 id="game-type-header" class="game-info__section-title">Game type</h1>
             <p class="current-game-type">Classic</p>
+        </div>
+        <div class="color-picker game-info__section">
+            <div class="color-picker__dropdown">
+                <span class="game-info__section-title">Choose snake color</span>
+                <span class="dropdown-arrow-down">▾</span>
+                <div class="snake-color-display"></div>
+                <div class="color-picker__dropdown-content">
+                    <% if(playerNumber === 1) { %>
+                        <div class="color-picker__item color-active"></div>
+                        <div class="color-picker__item"></div>
+                        <div class="color-picker__item"></div>
+                        <div class="color-picker__item"></div>
+                        <div class="color-picker__item"></div>
+                        <div class="color-picker__item"></div>
+                    <% } else { %>
+                        <div class="color-picker__item"></div>
+                        <div class="color-picker__item color-active"></div>
+                        <div class="color-picker__item"></div>
+                        <div class="color-picker__item"></div>
+                        <div class="color-picker__item"></div>
+                        <div class="color-picker__item"></div>
+                    <% } %>
+                </div>
+            </div>
         </div>
         <span class="back-arrow">←</span>
     </div>

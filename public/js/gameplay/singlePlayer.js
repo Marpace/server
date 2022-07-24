@@ -9,6 +9,7 @@ let allYouCanEatSeconds = 60;
 let isTurning = false;
 let gamesPlayed = 0;
 let mobile = window.screen.width < 993 ? true : false
+let playerColor;
 
 
     G.init();
@@ -23,6 +24,20 @@ let mobile = window.screen.width < 993 ? true : false
         const speed = parseInt(DOM.speedInput.value);
         handleStartGame(gameType, speed);
     });
+
+    DOM.singlePlayerSnakeColors.forEach(color => {
+        color.addEventListener('click', () => {
+            DOM.singlePlayerSnakeColors.forEach(color => {
+                color.classList.remove("color-active")
+            })
+            color.classList.add("color-active")
+            playerColor = getComputedStyle(color).backgroundColor;
+        });
+        if(color.classList.contains("color-active")){
+            playerColor = getComputedStyle(color).backgroundColor;
+        }
+    });
+
 
     DOM.gameTypeOptions.forEach(option => {
         option.addEventListener('click', () => {
@@ -81,7 +96,6 @@ let mobile = window.screen.width < 993 ? true : false
                 e.preventDefault(); 
                 const vel = getSinglePlayerUpdatedVelocity(e.keyCode, singlePlayerState);
                 if(vel !== undefined) singlePlayerState.player.vel = vel;
-                isTurning = false;
             break; 
             default: break; 
         }
@@ -216,6 +230,7 @@ let mobile = window.screen.width < 993 ? true : false
             {x: 2, y: 10},
             {x: 3, y: 10},
             ],
+            snakeColor: playerColor
         }
         let food; 
         switch (gameType) {
@@ -305,10 +320,17 @@ let mobile = window.screen.width < 993 ? true : false
                 if (cell.x === player.pos.x && cell.y === player.pos.y) {
                     result.winner = true ;
                     result.foodEaten = false;
+                
+                    console.log("crashed into it self")
+                    console.log(player.pos)
+                    console.log(cell)
+                    console.log(player.snake.indexOf(cell))
+                    console.log(player.snake)
                 }
             }
             player.snake.push({ ...player.pos }); 
             player.snake.shift();
+            isTurning = false;
         } 
 
         if(state.gameType === "All you can eat") {
@@ -331,9 +353,7 @@ let mobile = window.screen.width < 993 ? true : false
     }
 
     function randomFood(state) {
-
         let food; 
-
         if(state.gameType === "Classic" || 
             state.gameType === "Pedal to the metal"){
             food = {

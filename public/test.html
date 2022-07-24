@@ -14,47 +14,58 @@
 </head>
 <body style="display: flex; justify-content: center; align-items: center">
     
-    <aside class="game-aside game-chat mobile-chat-open">
-        <div id="chat">
-            <span class="close-chat">back →</span>
-            <div id="sent-messages">
-                <!-- messages get created in multiplayer.js and appended here  -->
+    <aside id="game-settings" class="game-aside">
+        <div class="game-info">
+            <div id="game-settings" class="game-info__section">
+                <p class="game-info__section-title">Settings</p>
+                <div id="speed-setting" class="section__item">
+                    <p>Speed</p>
+                    <input id="speed-input" type="number" value="5" min="1" max="20">
+                </div>
             </div>
-            <div class="gif-display">
-                <h1 class="giphy-attribution">Powered by Giphy</h1>
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
-                <img class="gif-img">
+            <div id="game-stats-single-player" class="game-info__section">
+                <p class="game-info__section-title">Stats</p>
+                <div class="section__item">
+                    <p>Highscore</p>
+                    <span id="highscore">0</span>
+                </div>
+                <div class="section__item">
+                    <p>Games played</p>
+                    <span id="games-played">0</span>
+                </div>
+                <div class="section__item">
+                    <p>Food count</p>
+                    <span id="food-count">0</span>
+                </div>
             </div>
-            <div class="chat__bottom">
-                <p class="typing"></p>
-                <button class="gif-icon">GIF</button>
-                <input type="text" class="gif-search-input" placeholder="Search gifs">
+            <div id="game-type" class="game-info__section">
+                <div id="game-type-dropdown" >
+                    <span id="game-type-dropdown__title" class="game-info__section-title">Choose game type </span><span id="dropdown-arrow-down">▾</span>
+                    <div id="game-type-dropdown__content">
+                        <p class="game-type__option option-active">Classic</p>
+                        <p class="game-type__option">Live bait</p>
+                        <p class="game-type__option">Pedal to the metal</p>
+                        <p class="game-type__option">All you can eat</p>
+                    </div>
+                </div>
+                <p class="current-game-type">Classic</p>
             </div>
+            <div class="color-picker game-info__section">
+                <p class="game-info__section-title">Choose snake colour</p>
+                <div class="color-grid">
+                    <div class="color-grid__item color-active"></div>
+                    <div class="color-grid__item"></div>
+                    <div class="color-grid__item"></div>
+                    <div class="color-grid__item"></div>
+                    <div class="color-grid__item"></div>
+                    <div class="color-grid__item"></div>
+                </div>
+            </div>
+            <span class="back-arrow">←</span>
         </div>
-        <div id="send-message">
-            <input id="compose-message" type="text" placeholder="Send message..." autocomplete="off">
-            <button id="send-message-btn" class="lobby-btn">Send</button>
-            <button id="mobile-send-message-btn">
-                <img src="icons/send_icon.png" alt="">
-            </button>
+        <div id="game-aside__buttons">
+            <button id="start-game-btn" class="lobby-btn">Start Game</button>
+            <button id="play-again-btn" class="lobby-btn">Play again</button>
         </div>
     </aside>
 </body>

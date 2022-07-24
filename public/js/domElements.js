@@ -37,7 +37,7 @@ export const codeInputMessage = qs("#code-input-message");
 export const nicknameMessage = qs("#nickname-message");
 export const welcomeMessage = qs("#welcome-message");
 
-//game aside 
+//game settings
 export const player1 = qs("#player-1");
 export const player2 = qs("#player-2");
 export const currentPlayers = qs("#current-players");
@@ -56,6 +56,9 @@ export const currentGameType = qs(".current-game-type")
 export const gameTypeDropdown = qs("#game-type-dropdown")
 export const gameTypeHeader = qs("#game-type-header")
 export const gamesPlayed = qs("#games-played")
+export const singlePlayerSnakeColors = Array.from(qsa(".color-grid__item"));
+export const multiplayerSnakeColors = Array.from(qsa(".color-picker__item"));
+export const snakeColorDisplay = qs(".snake-color-display")
 
 
 //game chat 

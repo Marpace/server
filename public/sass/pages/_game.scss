@@ -51,6 +51,12 @@
                 width: 90vw;
                 max-width: 700px;
             }
+
+            .food-test {
+                width: 40px;
+                height: 40px;
+                background-color: $light_green;
+            }
         }
 
         #game-message, #countdown {
@@ -73,9 +79,11 @@
         }
         #game-code-div {
             width: 100%;
-            padding: 20px 10px;
             display: flex;
             justify-content: space-between;
+            @include responsive($tablet_large) {
+                padding: 20px 10px;
+            }
 
             .settings-icon {
                 display: none;
@@ -126,7 +134,7 @@
                     &:after {
                         content: "";
                         position: absolute;
-                        left: 60%;
+                        left: 8px;
                         bottom: -3px;
                         height: 15px;
                         width: 15px;

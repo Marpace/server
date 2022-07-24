@@ -1,8 +1,8 @@
 import * as DOM from "../domElements.js"
 import * as G from "./game.js";
 
-const socket = io('https://snake-race.herokuapp.com');
-// const socket = io('http://localhost:3000');
+// const socket = io('https://snake-race.herokuapp.com');
+const socket = io('http://localhost:3000');
 
 socket.on('countdown', G.handleCountdown);
 socket.on('multiplayerGameState', G.handleGameState);
@@ -24,7 +24,6 @@ socket.on('displayTyping', handleDisplayTyping);
 
 socket.on('postMessage', handlePostMessage)
 
-console.log(getComputedStyle(DOM.gameChat).left)
 
 let playerNumber = parseInt(DOM.playerNumber.value); 
 let multiStats = {
@@ -42,7 +41,7 @@ let gifStills = [];
 document.addEventListener('keydown', multiplayerKeydown);
 document.addEventListener('keyup', userTyping)
 
-G.init();
+G.init(playerNumber);
 
 if(playerNumber === 1) {
     DOM.gameTypeHeader.style.display = "none";
@@ -54,6 +53,25 @@ if(playerNumber === 1) {
     }
     socket.emit('joinGame', data);
 }
+
+DOM.multiplayerSnakeColors.forEach(color => {
+    color.addEventListener('click', () => {
+        DOM.multiplayerSnakeColors.forEach(color => {
+            color.classList.remove("color-active")
+        })
+        color.classList.add("color-active")
+        DOM.snakeColorDisplay.style.backgroundColor = getComputedStyle(color).backgroundColor;
+        console.log(DOM.snakeColorDisplay)
+        const data = {
+            playerNumber: playerNumber,
+            color: getComputedStyle(color).backgroundColor
+        }
+        socket.emit('setPlayerColors', data)
+    });
+    if(color.classList.contains("color-active")) {
+        DOM.snakeColorDisplay.style.backgroundColor = getComputedStyle(color).backgroundColor;
+    }
+});
 
 DOM.startGameBtn.addEventListener('click', startGame); 
 DOM.playAgainBtn.addEventListener('click', startGame);
@@ -287,7 +305,7 @@ function createNewMessage(type, author, message, url, stillUrl) {
     } 
     if(author !== playerNumber && author !== "server") {
         newMessage.classList.add("incoming-message");
-        if(!DOM.gameChat.classList.contains("chat-open")) {
+        if(!DOM.gameChat.classList.contains("mobile-chat-open")) {
             DOM.mobileChatBtn.classList.add("notification")
         }
     } 
@@ -334,6 +352,7 @@ function toggleGifs() {
     DOM.gifBtn.classList.toggle("active-gif-button");
     DOM.messageInput.focus()
     DOM.gifSearchInput.focus()
+    DOM.gifSearchInput.value = "";
 }
 
 DOM.gifImages.forEach(img => {
