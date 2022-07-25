@@ -1,6 +1,5 @@
 .game-chat{
     width: 300px;
-    transition: .5s ease-in-out;
     @include responsive($tablet_large) {
         position: fixed;
         top: 0;
@@ -9,11 +8,15 @@
         transform: translateX(0);
         width: 100%;
         height: 100vh;
+        height: calc(var(--vh, 1vh) * 100);
         background-color: $very_dark_green;
         justify-content: space-between;
         padding-bottom: 30px;
         flex-wrap: nowrap;
         gap: 0px;
+        transition-property: left, transform;
+        transition-duration: .5s;
+        transition-timing-function: ease-in-out;
     } 
 
     .chat {
@@ -185,7 +188,7 @@
             justify-content: center;
             flex-wrap: nowrap;
             width: 90%;
-            margin-bottom: 50px;
+            margin-bottom: 20px;
         }
 
         .gif-icon {

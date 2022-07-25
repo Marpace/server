@@ -163,14 +163,15 @@ main {
     transition: 0.5s ease-in-out;
     width: 100%;
     height: 104vh;
+    height: calc(var(--vh, 1vh) * 100);
     max-height: 1220px;
+    background-color: #151201;
   }
 }
 .game-aside .game-info {
   width: 230px;
   height: 600px;
   padding: 10px 25px;
-  background-color: #151201;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -179,6 +180,7 @@ main {
   flex-wrap: nowrap;
   justify-content: flex-start;
   gap: 15px;
+  background-color: #151201;
 }
 @media only screen and (max-width: 992px) {
   .game-aside .game-info {
@@ -476,7 +478,6 @@ main {
 
 .game-chat {
   width: 300px;
-  transition: 0.5s ease-in-out;
 }
 @media only screen and (max-width: 992px) {
   .game-chat {
@@ -487,11 +488,15 @@ main {
     transform: translateX(0);
     width: 100%;
     height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     background-color: #151201;
     justify-content: space-between;
     padding-bottom: 30px;
     flex-wrap: nowrap;
     gap: 0px;
+    transition-property: left, transform;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
   }
 }
 .game-chat .chat {
@@ -682,7 +687,7 @@ main {
     justify-content: center;
     flex-wrap: nowrap;
     width: 90%;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
   }
 }
 .game-chat #send-message .gif-icon {
