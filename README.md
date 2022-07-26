@@ -27,8 +27,7 @@ Multiplayer mode is run on a server. With each frame, the game is updated on the
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Live Site URL: [Snake Race](https://wwww.snake-race.herokuapp.com)
 
 ## My process
 
@@ -55,4 +54,5 @@ Multiplayer mode is run on a server. With each frame, the game is updated on the
 
 - Pablo Almonacid - [Portfolio](https://www.marpace.github.io/portfolio)
 - Frontend Mentor - [@Marpace](https://www.frontendmentor.io/profile/Marpace)
+- Linkedin - [Pablo Almonacid](Marpace.github.io/portfolio)
 
