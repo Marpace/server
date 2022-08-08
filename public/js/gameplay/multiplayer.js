@@ -4,19 +4,19 @@ import * as G from "./game.js";
 // const socket = io('https://snake-race.herokuapp.com');
 const socket = io('http://localhost:3000');
 
-socket.on('countdown', G.handleCountdown);
-socket.on('multiplayerGameState', G.handleGameState);
+socket.on('countdown', G.handleCountdown); // displays countdown when star game button is clicked
+socket.on('multiplayerGameState', G.handleGameState); // receives updated game state from server with every frame
 socket.on('multiplayerGameOver', handleMultiplayerGameOver);
-socket.on('gameCode', handleGameCode);
+socket.on('gameCode', handleGameCode); //sets game code from server as text in a p element only visible to player 1
 socket.on('unknownCode', handleUnknownCode);
 socket.on('tooManyPlayers', handleTooManyPlayers);
-socket.on('displayPlayerOne', handleDisplayPlayerOne)
-socket.on('displayPlayerNames', handleDisplayPlayerNames)
+socket.on('displayPlayerOne', handleDisplayPlayerOne) // displays playe rone name when a game is created 
+socket.on('displayPlayerNames', handleDisplayPlayerNames) // displays both player names when a second player joins
 socket.on('notEnoughPlayers', handleNotEnoughtPlayers)
 socket.on('updateMultiFoodCount', handleUpdateMultiFoodCount)
 socket.on('updateMultiStats', handleUpdateMultiStats);
 socket.on('init', handleInit);
-socket.on('updatePlayerTwoSettings', handleUpdatePlayerTwoSettings);
+socket.on('updatePlayerTwoSettings', handleUpdatePlayerTwoSettings);// when player one changes settings it shows on player two
 socket.on('updateAllYouCanEatTimer', G.handleUpdateAllYouCanEatTimer);
 socket.on('updateChosenGameType', handleUpdateChosenGameType);
 socket.on('playerLeft', handlePlayerLeft);
